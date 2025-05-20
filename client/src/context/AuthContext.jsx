@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { authService } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -7,34 +8,36 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Check if user is logged in (e.g., check localStorage or session)
-        const checkAuth = () => {
-            const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
-            }
-            setLoading(false);
-        };
-        checkAuth();
+        // Check if user is logged in on mount
+        const currentUser = authService.getCurrentUser();
+        setUser(currentUser);
+        setLoading(false);
     }, []);
 
-    const login = (userData) => {
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
+    const login = async (credentials) => {
+        const response = await authService.login(credentials);
+        setUser(response.data.user);
+        return response;
+    };
+
+    const register = async (userData) => {
+        const response = await authService.register(userData);
+        setUser(response.data.user);
+        return response;
     };
 
     const logout = () => {
+        authService.logout();
         setUser(null);
-        localStorage.removeItem('user');
     };
 
     const value = {
         user,
         loading,
         login,
+        register,
         logout,
-        isAuthenticated: !!user,
-        isAdmin: user?.role === 'admin'
+        isAuthenticated: !!user
     };
 
     return (

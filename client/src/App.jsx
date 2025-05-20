@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import NavbarComponent from './components/Navbar'
 import Footer from './components/Footer'
 import { AuthProvider } from './context/AuthContext'
-import { ProtectedRoute } from './components/ProtectedRoute'
+import ProtectedRoute from './components/ProtectedRoute'
 
 // Import pages
 import Home from './pages/user/Home'

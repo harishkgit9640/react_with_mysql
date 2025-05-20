@@ -11,7 +11,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
+  console.log(user);
 
   const validateForm = () => {
     const newErrors = {};

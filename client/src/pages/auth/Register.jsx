@@ -53,7 +53,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log(JSON.stringify(formData));
+    console.log(JSON.stringify(formData));
 
     if (!validateForm()) return;
 

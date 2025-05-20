@@ -3,9 +3,12 @@ import jwt from 'jsonwebtoken';
 import promisePool from '../config/db.config.js';
 import { validateEmail, validatePassword } from '../utils/validators.js';
 
+const db = promisePool;
+
 export const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
+        console.log(req.body);
 
         // Validate input
         if (!name || !email || !password) {
