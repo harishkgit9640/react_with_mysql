@@ -1,9 +1,20 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
+import path from 'path';
 import promisePool from '../config/db.config.js';
 import { validateEmail, validatePassword } from '../utils/validators.js';
 
 const db = promisePool;
+
+
+// Configure multer for image upload
+const storage = multer.diskStorage({
+    destination: 'assets/uploads/',
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}-${file.originalname}`);
+    }
+});
 
 export const register = async (req, res) => {
     try {
@@ -176,60 +187,90 @@ export const getProfile = async (req, res) => {
     }
 };
 
-export const updateProfile = async (req, res) => {
-    try {
-        const { name, email } = req.body;
-
-        // Validate input
-        if (!name || !email) {
-            return res.status(400).json({
-                success: false,
-                message: 'Name and email are required'
-            });
-        }
-
-        if (!validateEmail(email)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid email format'
-            });
-        }
-
-        // Check if email is already taken by another user
-        const [existingUsers] = await db.query(
-            'SELECT * FROM users WHERE email = ? AND id != ?',
-            [email, req.user.id]
-        );
-
-        if (existingUsers.length > 0) {
-            return res.status(400).json({
-                success: false,
-                message: 'Email already in use'
-            });
-        }
-
-        // Update user
-        await db.query(
-            'UPDATE users SET name = ?, email = ? WHERE id = ?',
-            [name, email, req.user.id]
-        );
-
-        res.json({
-            success: true,
-            message: 'Profile updated successfully'
-        });
-    } catch (error) {
-        console.error('Update profile error:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error updating profile'
-        });
-    }
-};
-
 export const logout = (req, res) => {
     res.json({
         success: true,
         message: 'Logged out successfully'
     });
-}; 
+};
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5000000 }, // 5MB limit
+    fileFilter: (req, file, cb) => {
+        const filetypes = /jpeg|jpg|png/;
+        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+        const mimetype = filetypes.test(file.mimetype);
+        if (extname && mimetype) {
+            return cb(null, true);
+        }
+        cb(new Error('Only image files are allowed!'));
+    }
+}).single('profile_picture');
+
+export const updateProfile = async (req, res) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(400).json({
+                success: false,
+                message: err.message
+            });
+        }
+
+        try {
+            const { name, email, district_name, current_password, new_password } = req.body;
+            const userId = req.user.id;
+
+            // Verify current password if changing password
+            if (new_password) {
+                const user = await pool.query('SELECT password FROM users WHERE id = ?', [userId]);
+                const isValid = await bcrypt.compare(current_password, user[0].password);
+                if (!isValid) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Current password is incorrect'
+                    });
+                }
+            }
+
+            // Update user profile
+            const updateData = {
+                name,
+                email,
+                district_name
+            };
+
+            if (new_password) {
+                updateData.password = await bcrypt.hash(new_password, 10);
+            }
+
+            if (req.file) {
+                updateData.profile_picture = req.file.path;
+            }
+
+            await pool.query(
+                'UPDATE users SET ? WHERE id = ?',
+                [updateData, userId]
+            );
+
+            // Get updated user data
+            const [updatedUser] = await pool.query(
+                'SELECT id, name, email, role, district_name, profile_picture, created_at FROM users WHERE id = ?',
+                [userId]
+            );
+
+            res.json({
+                success: true,
+                message: 'Profile updated successfully',
+                data: updatedUser[0]
+            });
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error updating profile',
+                error: error.message
+            });
+        }
+    });
+};

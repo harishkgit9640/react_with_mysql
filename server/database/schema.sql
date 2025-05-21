@@ -1,11 +1,13 @@
-CREATE DATABASE IF NOT EXISTS react_mysql_db;
-USE react_mysql_db;
+CREATE DATABASE IF NOT EXISTS gpm_project;
+USE gpm_project;
+
 
 CREATE TABLE IF NOT EXISTS users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
   district_name VARCHAR(100),
+  profile_picture VARCHAR(255),
   password VARCHAR(255) NOT NULL,
   role ENUM('user', 'admin') DEFAULT 'user',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -45,9 +47,10 @@ CREATE TABLE IF NOT EXISTS all_projects (
 INSERT INTO users (name, email, password, role)
 VALUES (
   'Admin User',
-  'admin@example.com',
+  'admin@gmail.com',
   '$2a$10$X7UrH5YxX5YxX5YxX5YxX.5YxX5YxX5YxX5YxX5YxX5YxX5YxX5Yx',
-  'admin'
+  'admin',
+  'admin.jpg',
 ) ON DUPLICATE KEY UPDATE id=id; 
 
 INSERT INTO all_projects (
