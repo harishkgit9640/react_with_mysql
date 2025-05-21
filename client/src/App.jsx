@@ -37,14 +37,7 @@ const App = () => {
                 </PublicRoute>
               }
             />
-            <Route
-              path="/register"
-              element={
-                <PublicRoute>
-                  <Register />
-                </PublicRoute>
-              }
-            />
+
 
             {/* Protected User Routes */}
             <Route
@@ -78,6 +71,14 @@ const App = () => {
               element={
                 <ProtectedRoute requireAdmin={true}>
                   <AddProject />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/add-user"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <Register />
                 </ProtectedRoute>
               }
             />

@@ -31,7 +31,7 @@ function NavbarComponent() {
               <>
                 <Link to="/profile" className="nav-link">Profile</Link>
                 <Link to="/add-project" className="nav-link">Add Project</Link>
-                <Link to="/register" className="nav-link">Add User</Link>
+                <Link to="/add-user" className="nav-link">Add User</Link>
               </>
             )}
             <Link to="/contacts" className="nav-link">Contacts</Link>
