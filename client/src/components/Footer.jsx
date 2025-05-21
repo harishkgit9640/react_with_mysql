@@ -55,7 +55,7 @@ const Footer = () => {
           <div className="col-12">
             <hr className="bg-light" />
             <p className="text-center text-light mb-0">
-              © {new Date().getFullYear()} Company Name. All rights reserved.
+              © {new Date().getFullYear()} <span className='text-primary'>hksolution.in</span> All rights reserved.
             </p>
           </div>
         </div>

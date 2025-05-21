@@ -7,6 +7,7 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true
 });
 
 // Add token to requests if it exists
@@ -34,12 +35,16 @@ export const authService = {
 
     login: async (credentials) => {
         try {
-            const response = await api.post('/auth/login', credentials);
+            const response = await api.post('/auth/login', credentials, {
+                withCredentials: true // Enable sending cookies
+            });
             if (response.data.success) {
+                console.log(response.data);
                 localStorage.setItem('token', response.data.data.token);
                 localStorage.setItem('user', JSON.stringify(response.data.data.user));
+                return response.data;
             }
-            return response.data;
+            throw new Error(response.data.message || 'Login failed');
         } catch (error) {
             throw error.response?.data || { message: 'An error occurred' };
         }

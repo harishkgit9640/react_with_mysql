@@ -11,8 +11,9 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, user } = useAuth();
-  console.log(user);
+  const { login } = useAuth();
+  console.log(login);
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -57,6 +58,8 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
+        credentials: 'include',
+        //  mode: 'cors'
       });
 
       const data = await response.json();
@@ -65,11 +68,11 @@ const Login = () => {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Store the token and user data
-      login(data);
+      // Call login with the credentials
+      await login(formData);
 
       // Redirect to the page they tried to visit or dashboard
-      const from = location.state?.from?.pathname || '/user-dashboard';
+      const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
     } catch (error) {
       setErrors(prev => ({
