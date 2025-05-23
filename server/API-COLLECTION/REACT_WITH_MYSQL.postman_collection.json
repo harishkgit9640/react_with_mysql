@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "0a9248aa-aa33-4680-a78f-42ffcb3b55ca",
+		"name": "REACT_WITH_MYSQL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "44707961",
+		"_collection_link": "https://harish-8124035.postman.co/workspace/Harish's-Workspace~84995566-1ac8-451f-8236-3c70222ae4b6/collection/44707961-0a9248aa-aa33-4680-a78f-42ffcb3b55ca?action=share&source=collection_link&creator=44707961"
+	},
+	"item": [
+		{
+			"name": "REGISTER",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Save the response\r",
+							"const responseData = pm.response.json();\r",
+							"// Check if the user was created successfully\r",
+							"pm.test('User created successfully', function () {\r",
+							"    pm.expect(responseData.success).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.environment.set(\"token\", responseData.data.token);\r",
+							"pm.environment.set(\"name\", responseData.data.user.name);\r",
+							"pm.environment.set(\"email\", responseData.data.user.email);\r",
+							"pm.environment.set(\"userId\", responseData.data.user.id.toString());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\" : \"{{$randomUserName}}\" ,\r\n    \"email\" : \"{{$randomEmail}}\",\r\n    \"password\" : \"{{$randomPassword}}\",\r\n    \"district_name\":\"{{$randomCity}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{BASE_URL}}/auth/register"
+			},
+			"response": []
+		},
+		{
+			"name": "LOGIN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Save the response\r",
+							"const response = pm.response.json();\r",
+							"pm.environment.set(\"token\", response.data.token);\r",
+							"pm.environment.set(\"name\", response.data.user.name);\r",
+							"pm.environment.set(\"email\", response.data.user.email);\r",
+							"pm.environment.set(\"userId\", response.data.user.id.toString());\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\" : \"test@gmail.com\",\r\n    \"password\" : \"test@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{BASE_URL}}/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "GET-USERS",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BASE_URL}}/auth/get-users"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE-USERS",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BASE_URL}}/auth/delete-user/{{userId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "TOGGLE-STATUS",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BASE_URL}}/auth/toggle-status/{{userId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "LOGOUT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json();\r",
+							"if (res.success) {\r",
+							"    pm.environment.set(\"token\", \"\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BASE_URL}}/auth/logout"
+			},
+			"response": []
+		},
+		{
+			"name": "GET-SINGLE-USER",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"url": "{{BASE_URL}}/auth/get-user/{{userId}}"
+			},
+			"response": []
+		},
+		{
+			"name": "UPDATE-USER-PROFILE",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "profile_picture",
+							"type": "file",
+							"src": "/C:/Users/hsahu/Downloads/image-1.jpg"
+						}
+					]
+				},
+				"url": "{{BASE_URL}}/auth/update-profile/{{userId}}"
+			},
+			"response": []
+		}
+	]
+}
