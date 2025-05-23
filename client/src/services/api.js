@@ -55,6 +55,13 @@ export const authService = {
         localStorage.removeItem('user');
     },
 
+    getAllUser: async () => {
+        const response = await api.get('/auth/get-users');
+        if (response.data.success) {
+            return response.data;
+        }
+    },
+
     getCurrentUser: () => {
         const user = localStorage.getItem('user');
         return user ? JSON.parse(user) : null;
@@ -64,5 +71,33 @@ export const authService = {
         return !!localStorage.getItem('token');
     }
 };
+
+export const projectService = {
+    getAllProject: async (userData) => {
+        const response = await api.get('/projects/get-projects/' + userData);
+        if (response.data.success) {
+            return response.data;
+        }
+    },
+    getProject: async (userData) => {
+        const response = await api.get('/projects/get-project/' + userData);
+        if (response.data.success) {
+            return response.data;
+        }
+    },
+    updateProject: async (userData) => {
+        const response = await api.get('/projects/update-project/' + userData);
+        if (response.data.success) {
+            return response.data;
+        }
+    },
+    deleteProject: async (userData) => {
+        const response = await api.get('/projects/delete-project/' + userData);
+        if (response.data.success) {
+            return response.data;
+        }
+    },
+
+}
 
 export default api; 

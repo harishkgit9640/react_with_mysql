@@ -1,7 +1,6 @@
 CREATE DATABASE IF NOT EXISTS gpm_project;
 USE gpm_project;
 
-
 CREATE TABLE IF NOT EXISTS users (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
@@ -40,6 +39,8 @@ CREATE TABLE IF NOT EXISTS all_projects (
     contact_no VARCHAR(20),                            -- General Contact No
     district_name VARCHAR(100),                        -- District Name
     remarks TEXT                                       -- Remarks
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 

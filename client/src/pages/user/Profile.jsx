@@ -5,6 +5,11 @@ import api from '../../services/api';
 
 const Profile = () => {
   const { user, login } = useAuth();
+  // console.log(JSON.stringify(user));
+
+  // const joinData = new Date(user.created_at).toLocaleString()
+  // console.log(joinData.split(","))
+
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -28,7 +33,7 @@ const Profile = () => {
         email: user.email || '',
         district_name: user.district_name || ''
       }));
-      setPreviewImage(user.profile_picture || null);
+      setPreviewImage("http://localhost:5000/" + user.profile_picture || null);
     }
   }, [user]);
 
@@ -90,8 +95,8 @@ const Profile = () => {
           formDataToSend.append(key, formData[key]);
         }
       });
-
-      const response = await api.put('/user/profile', formDataToSend, {
+      // /update-profile/:id
+      const response = await api.put('/auth/update-profile/' + user.id, formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -230,7 +235,7 @@ const Profile = () => {
                     </li>
                     <li className="list-group-item">
                       <strong>Member Since:</strong>{' '}
-                      {new Date(user.created_at).toLocaleDateString()}
+                      {new Date(user.created_at).toLocaleString()}
                     </li>
                   </ul>
                 </div>

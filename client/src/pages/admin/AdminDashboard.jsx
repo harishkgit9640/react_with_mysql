@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Card, Spinner, Alert } from 'react-bootstrap';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
+
+  const query_cond = (user.role !== "admin" ? user.district_name : "admin")
 
   useEffect(() => {
     fetchProjects();
@@ -14,8 +18,8 @@ const AdminDashboard = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/projects/all-projects');
-      console.log(response.data);
+      const response = await api.get('/projects/all-projects/' + query_cond);
+      // console.log(response.data);
       if (response.data.success) {
         setProjects(response.data.data);
       } else {
@@ -71,10 +75,10 @@ const AdminDashboard = () => {
                     <td colSpan="6" className="text-center">No projects found</td>
                   </tr>
                 ) : (
-                  projects.map((project) => (
+                  projects.map((project, index) => (
                     <tr key={project.id}>
-                      <td>{project.id}</td>
-                      <td>{project.title}</td>
+                      <td>{index + 1}</td>
+                      <td>{project.name}</td>
                       <td>{project.description}</td>
                       <td>
                         <span className={`badge bg-${getStatusColor(project.status)}`}>
@@ -86,13 +90,13 @@ const AdminDashboard = () => {
                         <button
                           className="btn btn-sm btn-primary me-2"
                           onClick={() => handleEdit(project.id)}
-                        >
-                          <i className="fas fa-edit"></i>
+                        > Edit
+                          <i className="bi bi-edit"></i>
                         </button>
                         <button
                           className="btn btn-sm btn-danger"
                           onClick={() => handleDelete(project.id)}
-                        >
+                        > Delete
                           <i className="fas fa-trash"></i>
                         </button>
                       </td>

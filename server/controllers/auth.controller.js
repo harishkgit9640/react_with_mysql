@@ -21,7 +21,7 @@ export const register = async (req, res) => {
         const { name, email, password, district_name } = req.body;
 
         // Validate input
-        if (!name || !email || !password || !district_name ) {
+        if (!name || !email || !password || !district_name) {
             return res.status(400).json({
                 success: false,
                 message: 'All fields are required'
@@ -151,13 +151,7 @@ export const login = async (req, res) => {
             message: 'Login successful',
             data: {
                 token,
-                user: {
-                    id: user.id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                    status: user.status
-                }
+                user
             }
         });
     } catch (error) {
@@ -193,7 +187,7 @@ export const getUsers = async (req, res) => {
 export const toggleStatus = async (req, res) => {
     try {
         const userId = req.params.id;
-        
+
         // First check if user exists
         const [users] = await db.query(
             'SELECT id, status FROM users WHERE id = ?',
@@ -209,7 +203,7 @@ export const toggleStatus = async (req, res) => {
 
         // Toggle the status (if active -> inactive, if inactive -> active)
         const newStatus = users[0].status === 'active' ? 'inactive' : 'active';
-        
+
         // Update the user's status
         await db.query(
             'UPDATE users SET status = ? WHERE id = ?',
@@ -332,7 +326,7 @@ const upload = multer({
 export const updateProfile = async (req, res) => {
 
     upload(req, res, async (err) => {
-        
+
         if (err) {
             return res.status(400).json({
                 success: false,
@@ -343,7 +337,7 @@ export const updateProfile = async (req, res) => {
         try {
             const { name, email, district_name, current_password, new_password } = req.body;
             const userId = req.params.id;
-           
+
 
             // Verify current password if changing password
             if (new_password) {
