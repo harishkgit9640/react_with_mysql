@@ -12,8 +12,6 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
-  console.log(login);
-
 
   const validateForm = () => {
     const newErrors = {};

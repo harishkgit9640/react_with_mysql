@@ -44,13 +44,13 @@ CREATE TABLE IF NOT EXISTS all_projects (
 
 
 -- Create an admin user (password: admin123)
-INSERT INTO users (name, email, password, role)
+INSERT INTO users (name, email, password, role, district_name)
 VALUES (
   'Admin User',
   'admin@gmail.com',
   '$2a$10$X7UrH5YxX5YxX5YxX5YxX.5YxX5YxX5YxX5YxX5YxX5YxX5YxX5Yx',
   'admin',
-  'admin.jpg',
+  'Hyderabad'
 ) ON DUPLICATE KEY UPDATE id=id; 
 
 INSERT INTO all_projects (
