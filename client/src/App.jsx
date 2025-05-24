@@ -49,23 +49,16 @@ const App = () => {
               }
             />
             <Route
-              path="/user-dashboard"
+              path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <UserDashboard />
+                  <AdminDashboard />
                 </ProtectedRoute>
               }
             />
 
             {/* Protected Admin Routes */}
-            <Route
-              path="/admin-dashboard"
-              element={
-                <ProtectedRoute requireAdmin={true}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
+
             <Route
               path="/add-project"
               element={
@@ -75,10 +68,10 @@ const App = () => {
               }
             />
             <Route
-              path="/add-user"
+              path="/user-dashboard"
               element={
                 <ProtectedRoute requireAdmin={true}>
-                  <Register />
+                  <UserDashboard />
                 </ProtectedRoute>
               }
             />

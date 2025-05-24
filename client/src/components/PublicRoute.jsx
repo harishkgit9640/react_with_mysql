@@ -12,7 +12,7 @@ const PublicRoute = ({ children }) => {
 
     if (isAuthenticated) {
         // Redirect to appropriate dashboard based on user role
-        const dashboard = user?.role === 'admin' ? '/admin-dashboard' : '/user-dashboard';
+        const dashboard = user?.role === 'admin' ? '/dashboard' : '/user-dashboard';
         return <Navigate to={dashboard} state={{ from: location }} replace />;
     }
 

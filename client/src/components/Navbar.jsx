@@ -7,6 +7,8 @@ import { useAuth } from '../context/AuthContext';
 function NavbarComponent() {
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const isAdmin = user?.role === "admin"
+
 
   const handleLogout = async () => {
     try {
@@ -25,16 +27,26 @@ function NavbarComponent() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link to="/admin-dashboard" className="nav-link">Dashboard</Link>
-            <Link to="/about" className="nav-link">About</Link>
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <>
+                <Link to="/dashboard" className="nav-link">Dashboard</Link>
+                {isAdmin && (<>
+                  <Link to="/add-project" className="nav-link">Projects</Link>
+                  <Link to="/user-dashboard" className="nav-link">Users</Link>
+                </>)}
+
                 <Link to="/profile" className="nav-link">Profile</Link>
-                <Link to="/add-project" className="nav-link">Add Project</Link>
-                <Link to="/add-user" className="nav-link">Add User</Link>
               </>
-            )}
-            <Link to="/contacts" className="nav-link">Contacts</Link>
+            ) :
+              (
+                <>
+                  <Link to="/" className="nav-link">Home</Link>
+                  <Link to="/about" className="nav-link">About</Link>
+                  <Link to="/contacts" className="nav-link">Contacts</Link>
+
+                </>
+              )
+            }
           </Nav>
           <Nav>
             {isAuthenticated ? (
