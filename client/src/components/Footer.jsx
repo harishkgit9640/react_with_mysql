@@ -8,9 +8,9 @@ const Footer = () => {
         <div className="row">
           {/* Company Info */}
           <div className="col-md-4 mb-3">
-            <h5 className="mb-3">Company Name</h5>
+            <h5 className="mb-3">NIC GPM</h5>
             <p className="text-light">
-              Providing quality services and solutions for our customers.
+              Providing quality services and solutions for our employee.
             </p>
           </div>
 
@@ -25,7 +25,7 @@ const Footer = () => {
                 <Link to="/about" className="text-decoration-none text-light">About</Link>
               </li>
               <li className="mb-2">
-                <Link to="/Career" className="text-decoration-none text-light">Career</Link>
+                {/* <Link to="/Career" className="text-decoration-none text-light">Career</Link> */}
               </li>
             </ul>
           </div>
@@ -36,15 +36,15 @@ const Footer = () => {
             <ul className="list-unstyled text-light">
               <li className="mb-2">
                 <i className="bi bi-geo-alt me-2"></i>
-                123 Street Name, City, Country
+                GURUKUL CAMPUS ADMINISTRATIVE BUILDING NIC GAURELA PENDRA MARWAHI,CHHATTISGARH
               </li>
               <li className="mb-2">
                 <i className="bi bi-envelope me-2"></i>
-                info@company.com
+                gpm nic.in
               </li>
               <li className="mb-2">
                 <i className="bi bi-telephone me-2"></i>
-                +1 234 567 890
+                +91 9993426936
               </li>
             </ul>
           </div>
@@ -55,7 +55,7 @@ const Footer = () => {
           <div className="col-12">
             <hr className="bg-light" />
             <p className="text-center text-light mb-0">
-              © {new Date().getFullYear()} <span className='text-primary'>hksolution.in</span> All rights reserved.
+              © {new Date().getFullYear()} <span className='text-primary'>Gaurela-Pendra-Marwahi,Chhattisgarh,Developed and hosted by National Informatic Center,gaurela-pendra-marwahi</span> All rights reserved.
             </p>
           </div>
         </div>
