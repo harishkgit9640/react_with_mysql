@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Table, Card, Spinner, Alert } from 'react-bootstrap';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
-import ViewProjectModal from '../../components/ViewProjectModal';
-import EditProjectModal from '../../components/EditProjectModal';
+import ViewProjectModal from '../admin/ViewProjectModal';
+import EditProjectModal from '../admin/EditProjectModal';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);

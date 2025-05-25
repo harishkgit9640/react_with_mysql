@@ -145,14 +145,6 @@ const Login = () => {
                 </div>
               </form>
             </div>
-            <div className="card-footer text-center py-3">
-              <div className="small">
-                Don't have an account?{' '}
-                <Link to="/register" className="text-decoration-none">
-                  Register here
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </div>

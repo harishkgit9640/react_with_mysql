@@ -1,11 +1,11 @@
 import express from 'express';
-import { register, login, getUserById, updateProfile, logout, getUsers, toggleStatus ,deleteUser} from '../controllers/auth.controller.js';
+import { createUser, login, getUserById, updateProfile, logout, getUsers, toggleStatus, deleteUser } from '../controllers/auth.controller.js';
 import { verifyToken } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
 // Public routes
-router.post('/register', register);
+router.post('/create-user', createUser);
 router.post('/login', login);
 
 // Protected routes

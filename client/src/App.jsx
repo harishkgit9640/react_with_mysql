@@ -13,8 +13,7 @@ import About from './pages/user/About'
 import Profile from './pages/user/Profile'
 import Contacts from './pages/user/Contacts'
 import Login from './pages/auth/Login'
-import Register from './pages/auth/Register'
-import UserDashboard from './pages/user/UserDashboard'
+import UserDashboard from './pages/admin/UserDashboard'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import NotFound from './pages/NotFound'
 
@@ -37,7 +36,6 @@ const App = () => {
                 </PublicRoute>
               }
             />
-
 
             {/* Protected User Routes */}
             <Route

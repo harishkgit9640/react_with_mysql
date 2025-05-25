@@ -15,8 +15,8 @@ const storage = multer.diskStorage({
     }
 });
 
-// register user
-export const register = async (req, res) => {
+// createUser user
+export const createUser = async (req, res) => {
     try {
         const { name, email, password, district_name } = req.body;
 
@@ -75,7 +75,7 @@ export const register = async (req, res) => {
 
         res.status(201).json({
             success: true,
-            message: 'User registered successfully',
+            message: 'User Created successfully',
             data: {
                 token,
                 user: {
@@ -90,7 +90,7 @@ export const register = async (req, res) => {
         console.error('Registration error:', error);
         res.status(500).json({
             success: false,
-            message: 'Error registering user'
+            message: 'Error while creating user'
         });
     }
 };
