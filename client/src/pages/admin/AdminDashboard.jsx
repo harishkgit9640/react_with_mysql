@@ -19,7 +19,6 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const response = await api.get('/projects/all-projects/' + query_cond);
-      // console.log(response.data);
       if (response.data.success) {
         setProjects(response.data.data);
       } else {
@@ -31,6 +30,29 @@ const AdminDashboard = () => {
       setLoading(false);
     }
   };
+
+  // status toggler
+  const toggleUserStatus = async (project_id) => {
+    await api.put('/projects/toggle-status/' + project_id);
+    fetchProjects();
+  }
+  // Action handlers
+  const handleEdit = (project_id) => {
+    // Implement edit functionality
+    console.log('Edit project:', project_id);
+  };
+
+  const handleDelete = async (project_id) => {
+    await api.delete('/projects/delete-project/' + project_id);
+    fetchProjects();
+  };
+  const ViewProject = async (project_id) => {
+    console.log(project_id);
+
+    // await api.get('/projects/get-project/' + project_id);
+    // fetchProjects();
+  };
+
 
   if (loading) {
     return (
@@ -62,8 +84,10 @@ const AdminDashboard = () => {
               <thead>
                 <tr>
                   <th>ID</th>
-                  <th>Title</th>
+                  <th>Project Name</th>
                   <th>Description</th>
+                  <th>Level</th>
+                  <th>District</th>
                   <th>Status</th>
                   <th>Created At</th>
                   <th>Actions</th>
@@ -78,10 +102,12 @@ const AdminDashboard = () => {
                   projects.map((project, index) => (
                     <tr key={project.id}>
                       <td>{index + 1}</td>
-                      <td>{project.name}</td>
+                      <td>{project.project_name}</td>
                       <td>{project.description}</td>
+                      <td>{project.level}</td>
+                      <td>{project.district_name || "NA"}</td>
                       <td>
-                        <span className={`badge bg-${getStatusColor(project.status)}`}>
+                        <span onClick={() => toggleUserStatus(project.id)} className={`badge bg-${getStatusColor(project.status)}`}>
                           {project.status}
                         </span>
                       </td>
@@ -94,9 +120,15 @@ const AdminDashboard = () => {
                           <i className="bi bi-edit"></i>
                         </button>
                         <button
-                          className="btn btn-sm btn-danger"
+                          className="btn btn-sm btn-danger me-2"
                           onClick={() => handleDelete(project.id)}
                         > Delete
+                          <i className="fas fa-trash"></i>
+                        </button>
+                        <button
+                          className="btn btn-sm btn-info"
+                          onClick={() => ViewProject(project.id)}
+                        > View
                           <i className="fas fa-trash"></i>
                         </button>
                       </td>
@@ -128,15 +160,5 @@ const getStatusColor = (status) => {
   }
 };
 
-// Action handlers
-const handleEdit = (id) => {
-  // Implement edit functionality
-  console.log('Edit project:', id);
-};
-
-const handleDelete = (id) => {
-  // Implement delete functionality
-  console.log('Delete project:', id);
-};
 
 export default AdminDashboard;

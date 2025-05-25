@@ -24,9 +24,11 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+
+SELECT * FROM all_projects limit 1;
 CREATE TABLE IF NOT EXISTS all_projects (
     id INT AUTO_INCREMENT PRIMARY KEY,                 -- Sr. No.
-    name VARCHAR(255),                                 -- Project
+    project_name VARCHAR(255),                                 -- Project
     status ENUM('Active', 'Inactive'),                 -- Status (Active / Inactive)
     level ENUM('Central', 'State', 'District'),        -- Project Level
     description TEXT,                                  -- Project Desc
@@ -66,7 +68,7 @@ VALUES (
 ) ON DUPLICATE KEY UPDATE id=id; 
 
 INSERT INTO all_projects (
-    name, status, level, description, url, implemented_in_dist,
+    project_name, status, level, description, url, implemented_in_dist,
     dist_login_avl, nodal_office, nodal_contact_no, dio_id_avl,
     dio_id, manpower_avl, mp_name, mp_post, mp_contact_no,
     spc_name, handling_officer, contact_no, district_name, remarks

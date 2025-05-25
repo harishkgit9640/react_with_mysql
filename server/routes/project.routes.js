@@ -14,6 +14,7 @@ router.post('/create-project', projectController.createProject);
 router.get('/all-projects/:district_name', projectController.getAllProjects);
 router.get('/get-project/:id', projectController.getProjectById);
 router.put('/update-project/:id', projectController.updateProject);
+router.put('/toggle-status/:id', projectController.toggleStatus);
 router.delete('/delete-project/:id', projectController.deleteProject);
 
 export default router;

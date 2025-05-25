@@ -9,7 +9,7 @@ export const projectController = {
     createProject: async (req, res) => {
         try {
             const {
-                name, status, level, description, url, implemented_in_dist,
+                project_name, status, level, description, url, implemented_in_dist,
                 dist_login_avl, nodal_office, nodal_contact_no, dio_id_avl,
                 dio_id, manpower_avl, mp_name, mp_post, mp_contact_no,
                 spc_name, handling_officer, contact_no, district_name, remarks
@@ -17,13 +17,13 @@ export const projectController = {
 
             const [result] = await pool.query(
                 `INSERT INTO all_projects (
-                    name, status, level, description, url, implemented_in_dist,
+                    project_name, status, level, description, url, implemented_in_dist,
                     dist_login_avl, nodal_office, nodal_contact_no, dio_id_avl,
                     dio_id, manpower_avl, mp_name, mp_post, mp_contact_no,
                     spc_name, handling_officer, contact_no, district_name, remarks
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    name, status, level, description, url, implemented_in_dist,
+                    project_name, status, level, description, url, implemented_in_dist,
                     dist_login_avl, nodal_office, nodal_contact_no, dio_id_avl,
                     dio_id, manpower_avl, mp_name, mp_post, mp_contact_no,
                     spc_name, handling_officer, contact_no, district_name, remarks
@@ -101,7 +101,7 @@ export const projectController = {
         try {
             const updateData = {};
             const allowedFields = [
-                'name', 'status', 'level', 'description', 'url', 'implemented_in_dist',
+                'project_name', 'status', 'level', 'description', 'url', 'implemented_in_dist',
                 'dist_login_avl', 'nodal_office', 'nodal_contact_no', 'dio_id_avl',
                 'dio_id', 'manpower_avl', 'mp_name', 'mp_post', 'mp_contact_no',
                 'spc_name', 'handling_officer', 'contact_no', 'district_name', 'remarks'
@@ -172,7 +172,51 @@ export const projectController = {
                 error: error.message
             });
         }
-    }
+    },
+
+    // Project toggle status
+    toggleStatus: async (req, res) => {
+        try {
+            const userId = req.params.id;
+
+            // First check if user exists
+            const [project] = await pool.query(
+                'SELECT id, status FROM all_projects WHERE id = ?',
+                [userId]
+            );
+
+            if (project.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'Project not found'
+                });
+            }
+
+            // Toggle the status (if active -> inactive, if inactive -> active)
+            const newStatus = project[0].status === 'Active' ? 'Inactive' : 'Active';
+
+            // Update the project's status
+            await pool.query(
+                'UPDATE all_projects SET status = ? WHERE id = ?',
+                [newStatus, userId]
+            );
+
+            res.json({
+                success: true,
+                message: `Projects status updated to ${newStatus}`,
+                data: {
+                    id: userId,
+                    status: newStatus
+                }
+            });
+        } catch (error) {
+            console.error('Toggle status error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error updating Projects status'
+            });
+        }
+    },
 };
 
 
