@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Card, Spinner, Alert, Modal } from 'react-bootstrap';
 import api from '../../services/api';
-import Form from '../../components/Form'
+import Form from '../../components/Form';
+import ViewUserModal from '../../components/ViewUserModal';
 
 const UserDashboard = () => {
-
   // Modal and form states
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showViewModal, setShowViewModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -18,12 +19,10 @@ const UserDashboard = () => {
 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errors, setErrors] = useState(null);
-
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     fetchAllUser();
-
   }, []);
 
   const fetchAllUser = async () => {
@@ -33,10 +32,10 @@ const UserDashboard = () => {
       if (response.data.success) {
         setUsers(response.data.data);
       } else {
-        setErrors('Failed to fetch projects');
+        setErrors({ general: 'Failed to fetch users' });
       }
     } catch (err) {
-      setErrors(err.response?.data?.message || 'Error fetching projects');
+      setErrors({ general: err.response?.data?.message || 'Error fetching users' });
     } finally {
       setLoading(false);
     }
@@ -44,9 +43,26 @@ const UserDashboard = () => {
 
   // status toggler
   const toggleUserStatus = async (user_id) => {
-    await api.put('/auth/toggle-status/' + user_id);
-    fetchAllUser();
-  }
+    try {
+      await api.put('/auth/toggle-status/' + user_id);
+      fetchAllUser();
+    } catch (err) {
+      setErrors({ general: err.response?.data?.message || 'Error toggling user status' });
+    }
+  };
+
+  // View user handler
+  const handleView = async (userId) => {
+    try {
+      const response = await api.get(`/auth/get-user/${userId}`);
+      if (response.data.success) {
+        setSelectedUser(response.data.data);
+        setShowViewModal(true);
+      }
+    } catch (err) {
+      setErrors({ general: err.response?.data?.message || 'Error fetching user details' });
+    }
+  };
 
   // Edit handlers
   const handleEdit = async (userId) => {
@@ -54,7 +70,6 @@ const UserDashboard = () => {
       const response = await api.get(`/auth/get-user/${userId}`);
       if (response.data.success) {
         const userData = response.data.data;
-
         setSelectedUser(userData);
         setFormData({
           name: userData.name,
@@ -64,10 +79,9 @@ const UserDashboard = () => {
         setShowEditModal(true);
       }
     } catch (err) {
-      setErrors('Failed to fetch user details', err);
+      setErrors({ general: err.response?.data?.message || 'Error fetching user details' });
     }
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -108,26 +122,31 @@ const UserDashboard = () => {
     try {
       const response = await api.put(`/auth/update-profile/${selectedUser.id}`, formData);
       if (response.data.success) {
-        // console.log(response.data);
         setSubmitStatus('success');
+        fetchAllUser();
         setTimeout(() => {
           setShowEditModal(false);
           setSubmitStatus(null);
         }, 1500);
       }
     } catch (err) {
-      setSubmitStatus('errors');
-      setErrors(err.response?.data?.message || 'Failed to update user');
+      setSubmitStatus('error');
+      setErrors({ general: err.response?.data?.message || 'Failed to update user' });
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (user_id) => {
-    await api.delete('/auth/delete-user/' + user_id);
-    fetchAllUser();
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      try {
+        await api.delete('/auth/delete-user/' + user_id);
+        fetchAllUser();
+      } catch (err) {
+        setErrors({ general: err.response?.data?.message || 'Error deleting user' });
+      }
+    }
   };
-
 
   // Form fields configuration
   const formFields = [
@@ -140,7 +159,7 @@ const UserDashboard = () => {
     {
       name: 'email',
       label: 'Email',
-      type: 'text',
+      type: 'email',
       placeholder: 'Enter user email'
     },
     {
@@ -148,10 +167,8 @@ const UserDashboard = () => {
       label: 'District Name',
       type: 'text',
       placeholder: 'Enter user District Name'
-    },
-
+    }
   ];
-
 
   if (loading) {
     return (
@@ -163,16 +180,13 @@ const UserDashboard = () => {
     );
   }
 
-
-  if (errors) {
+  if (errors.general) {
     return (
       <Alert variant="danger" className="m-3">
-        {errors}
+        {errors.general}
       </Alert>
     );
   }
-
-
 
   return (
     <div className="container py-4">
@@ -205,24 +219,33 @@ const UserDashboard = () => {
                       <td>{user.name}</td>
                       <td>{user.email}</td>
                       <td>{user.district_name}</td>
-
                       <td>
-                        <span onClick={() => toggleUserStatus(user.id)} className={`badge bg-${getStatusColor(user.status)}`}>
+                        <span
+                          onClick={() => toggleUserStatus(user.id)}
+                          className={`badge bg-${getStatusColor(user.status)} cursor-pointer`}
+                          style={{ cursor: 'pointer' }}
+                        >
                           {user.status}
                         </span>
                       </td>
                       <td>
                         <button
+                          className="btn btn-sm btn-info me-2"
+                          onClick={() => handleView(user.id)}
+                        >
+                          <i className="bi bi-eye"></i> View
+                        </button>
+                        <button
                           className="btn btn-sm btn-primary me-2"
                           onClick={() => handleEdit(user.id)}
-                        > Edit
-                          <i className="bi bi-edit"></i>
+                        >
+                          <i className="bi bi-pencil"></i> Edit
                         </button>
                         <button
                           className="btn btn-sm btn-danger"
                           onClick={() => handleDelete(user.id)}
-                        > Delete
-                          <i className="fas fa-trash"></i>
+                        >
+                          <i className="bi bi-trash"></i> Delete
                         </button>
                       </td>
                     </tr>
@@ -233,8 +256,24 @@ const UserDashboard = () => {
           </div>
         </Card.Body>
       </Card>
+
+      {/* View User Modal */}
+      <ViewUserModal
+        show={showViewModal}
+        onHide={() => {
+          setShowViewModal(false);
+          setSelectedUser(null);
+          setErrors({});
+        }}
+        user={selectedUser}
+      />
+
       {/* Edit User Modal */}
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal show={showEditModal} onHide={() => {
+        setShowEditModal(false);
+        setSelectedUser(null);
+        setErrors({});
+      }}>
         <Modal.Header closeButton>
           <Modal.Title>Edit User</Modal.Title>
         </Modal.Header>
@@ -262,9 +301,7 @@ const getStatusColor = (status) => {
       return 'success';
     case 'pending':
       return 'warning';
-    case 'completed':
-      return 'info';
-    case 'cancelled':
+    case 'inactive':
       return 'danger';
     default:
       return 'secondary';
