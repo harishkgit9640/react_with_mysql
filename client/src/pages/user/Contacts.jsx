@@ -46,17 +46,28 @@ const Contacts = () => {
       }));
     }
   };
-
   const handleSubmit = async (e) => {
-    console.log(formData);
-
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsSubmitting(true);
+    setSubmitStatus(null);
+
     try {
-      // Here you would typically make an API call to your backend
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('http://localhost:5000/api/contacts/add-contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to submit contact form');
+      }
+
       setSubmitStatus('success');
       setFormData({
         name: '',
@@ -66,7 +77,11 @@ const Contacts = () => {
       });
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitStatus('error', error);
+      setSubmitStatus('error');
+      setErrors(prev => ({
+        ...prev,
+        submit: error.message
+      }));
     } finally {
       setIsSubmitting(false);
     }

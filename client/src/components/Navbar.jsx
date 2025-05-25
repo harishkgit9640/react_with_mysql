@@ -33,6 +33,7 @@ function NavbarComponent() {
                 {isAdmin && (<>
                   <Link to="/add-project" className="nav-link">Projects</Link>
                   <Link to="/user-dashboard" className="nav-link">Users</Link>
+                  <Link to="/contact-management" className="nav-link">Contacts</Link>
                 </>)}
 
                 <Link to="/profile" className="nav-link">Profile</Link>

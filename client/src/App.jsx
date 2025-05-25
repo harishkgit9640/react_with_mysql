@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
 import AddProject from './pages/admin/AddProject'
+import ContactManagement from './pages/admin/ContactManagement'
 
 // Import pages
 import Home from './pages/user/Home'
@@ -70,6 +71,14 @@ const App = () => {
               element={
                 <ProtectedRoute requireAdmin={true}>
                   <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/contact-management"
+              element={
+                <ProtectedRoute requireAdmin={true}>
+                  <ContactManagement />
                 </ProtectedRoute>
               }
             />
