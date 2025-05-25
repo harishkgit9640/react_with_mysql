@@ -3,6 +3,7 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { NavDropdown, Image } from 'react-bootstrap';
 
 function NavbarComponent() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -31,41 +32,50 @@ function NavbarComponent() {
               <>
                 <Link to="/dashboard" className="nav-link">Dashboard</Link>
                 {isAdmin && (<>
-                  <Link to="/add-project" className="nav-link">Projects</Link>
-                  <Link to="/user-dashboard" className="nav-link">Users</Link>
-                  <Link to="/contact-management" className="nav-link">Contacts</Link>
+                  <Link to="/user-dashboard" className="nav-link">User Details</Link>
+                  <Link to="/contact-management" className="nav-link">Contact Details</Link>
                 </>)}
-
-                <Link to="/profile" className="nav-link">Profile</Link>
-              </>
-            ) :
-              (
-                <>
-                  <Link to="/" className="nav-link">Home</Link>
-                  <Link to="/about" className="nav-link">About</Link>
-                  <Link to="/contacts" className="nav-link">Contacts</Link>
-
-                </>
-              )
-            }
-          </Nav>
-          <Nav>
-            {isAuthenticated ? (
-              <>
-                <span className="nav-link text-primary">
-                  Welcome, {user?.name || 'User'}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="nav-link btn btn-link"
-                >
-                  Logout
-                </button>
               </>
             ) : (
               <>
-                <Link to="/login" className="nav-link">Login</Link>
+                <Link to="/" className="nav-link">Home</Link>
+                <Link to="/about" className="nav-link">About</Link>
+                <Link to="/contacts" className="nav-link">Contacts</Link>
               </>
+            )}
+          </Nav>
+
+          <Nav className="ms-auto">
+            {isAuthenticated ? (
+              <NavDropdown
+                title={
+                  <div className="d-flex align-items-center">
+                    <span>{user?.name || 'User'}</span>
+                    <Image
+                      // src={user?.profile_picture || '/default-avatar.png'}
+                      src={`http://localhost:5000/${user.profile_picture}`}
+
+                      alt={user?.name || 'User'}
+                      roundedCircle
+                      style={{ width: '32px', height: '32px', marginRight: '8px' }}
+                    />
+                  </div>
+                }
+                id="basic-nav-dropdown"
+                align="end"
+              >
+                <NavDropdown.Item as={Link} to="/profile">
+                  <i className="bi bi-person me-2"></i>
+                  Profile
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={handleLogout}>
+                  <i className="bi bi-box-arrow-right me-2"></i>
+                  Logout
+                </NavDropdown.Item>
+              </NavDropdown>
+            ) : (
+              <Link to="/login" className="nav-link">Login</Link>
             )}
           </Nav>
         </Navbar.Collapse>

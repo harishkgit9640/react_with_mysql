@@ -57,15 +57,6 @@ const App = () => {
             />
 
             {/* Protected Admin Routes */}
-
-            <Route
-              path="/add-project"
-              element={
-                <ProtectedRoute requireAdmin={true}>
-                  <AddProject />
-                </ProtectedRoute>
-              }
-            />
             <Route
               path="/user-dashboard"
               element={

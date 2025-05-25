@@ -1,19 +1,12 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import multer from 'multer';
-import path from 'path';
 import promisePool from '../config/db.config.js';
 import { validateEmail, validatePassword } from '../utils/validators.js';
+import { upload, handleMulterError, deleteOldAvatar } from '../middleware/uploadAvatar.js';
+import path from 'path';
+import fs from 'fs';
 
 const db = promisePool;
-
-// Configure multer for image upload
-const storage = multer.diskStorage({
-    destination: 'assets/uploads/',
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
 
 // createUser user
 export const createUser = async (req, res) => {
@@ -306,88 +299,109 @@ export const deleteUser = async (req, res) => {
     }
 };
 
-// update profile
+// update avatar
+export const updateAvatar = async (req, res) => {
+    try {
+        const userId = req.params.id;
 
-const upload = multer({
-    storage,
-    limits: { fileSize: 5000000 }, // 5MB limit
-    fileFilter: (req, file, cb) => {
-        const filetypes = /jpeg|jpg|png/;
-        const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-        const mimetype = filetypes.test(file.mimetype);
-        if (extname && mimetype) {
-            return cb(null, true);
+        // Check if user exists
+        const [users] = await db.query(
+            'SELECT id, profile_picture FROM users WHERE id = ?',
+            [userId]
+        );
+
+        if (users.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
         }
-        cb(new Error('Only image files are allowed!'));
+
+        // Delete old avatar if exists
+        if (users[0].profile_picture) {
+            const oldAvatarPath = path.join(process.cwd(), users[0].profile_picture);
+            if (fs.existsSync(oldAvatarPath)) {
+                fs.unlinkSync(oldAvatarPath);
+            }
+        }
+
+        // Update profile picture path in database
+        await db.query(
+            'UPDATE users SET profile_picture = ? WHERE id = ?',
+            [req.file.path, userId]
+        );
+
+        // Get updated user data
+        const [updatedUser] = await db.query(
+            'SELECT id, name, email, role, district_name, profile_picture, created_at FROM users WHERE id = ?',
+            [userId]
+        );
+
+        res.json({
+            success: true,
+            message: 'Profile picture updated successfully',
+            data: updatedUser[0]
+        });
+    } catch (error) {
+        console.error('Error updating avatar:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating profile picture',
+            error: error.message
+        });
     }
-}).single('profile_picture');
+};
 
 // update profile
 export const updateProfile = async (req, res) => {
+    try {
+        const { name, email, district_name, current_password, new_password } = req.body;
+        const userId = req.params.id;
 
-    upload(req, res, async (err) => {
-
-        if (err) {
-            return res.status(400).json({
-                success: false,
-                message: err.message
-            });
+        // Verify current password if changing password
+        if (new_password) {
+            const [user] = await db.query('SELECT password FROM users WHERE id = ?', [userId]);
+            const isValid = await bcrypt.compare(current_password, user[0]?.password);
+            if (!isValid) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Current password is incorrect'
+                });
+            }
         }
 
-        try {
-            const { name, email, district_name, current_password, new_password } = req.body;
-            const userId = req.params.id;
+        // Update user profile
+        const updateData = {};
+        if (name) updateData.name = name;
+        if (email) updateData.email = email;
+        if (district_name) updateData.district_name = district_name;
 
-
-            // Verify current password if changing password
-            if (new_password) {
-                const [user] = await db.query('SELECT password FROM users WHERE id = ?', [userId]);
-                const isValid = await bcrypt.compare(current_password, user[0]?.password);
-                if (!isValid) {
-                    return res.status(400).json({
-                        success: false,
-                        message: 'Current password is incorrect'
-                    });
-                }
-            }
-
-            // Update user profile
-            const updateData = {};
-            if (name) updateData.name = name;
-            if (email) updateData.email = email;
-            if (district_name) updateData.district_name = district_name;
-
-            if (new_password) {
-                updateData.password = await bcrypt.hash(new_password, 10);
-            }
-
-            if (req.file) {
-                updateData.profile_picture = req.file.path;
-            }
-
-            await db.query(
-                'UPDATE users SET ? WHERE id = ?',
-                [updateData, userId]
-            );
-
-            // Get updated user data
-            const [updatedUser] = await db.query(
-                'SELECT id, name, email, role, district_name, profile_picture, created_at FROM users WHERE id = ?',
-                [userId]
-            );
-
-            res.json({
-                success: true,
-                message: 'Profile updated successfully',
-                data: updatedUser[0]
-            });
-        } catch (error) {
-            console.error('Error updating profile:', error);
-            res.status(500).json({
-                success: false,
-                message: 'Error updating profile',
-                error: error.message
-            });
+        if (new_password) {
+            updateData.password = await bcrypt.hash(new_password, 10);
         }
-    });
+
+        await db.query(
+            'UPDATE users SET ? WHERE id = ?',
+            [updateData, userId]
+        );
+
+        // Get updated user data
+        const [updatedUser] = await db.query(
+            'SELECT id, name, email, role, district_name, profile_picture, created_at FROM users WHERE id = ?',
+            [userId]
+        );
+
+        res.json({
+            success: true,
+            message: 'Profile updated successfully',
+            data: updatedUser[0]
+        });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error updating profile',
+            error: error.message
+        });
+    }
 };

@@ -2,28 +2,27 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import Form from '../../components/Form';
 import api from '../../services/api';
+import { Card, Row, Col, Button, Image, Alert } from 'react-bootstrap';
+import { validateImage, createImagePreview, uploadAvatar, cleanupPreview } from '../../utils/uploadAvatar';
 
 const Profile = () => {
   const { user, login } = useAuth();
-  // console.log(JSON.stringify(user));
-
-  // const joinData = new Date(user.created_at).toLocaleString()
-  // console.log(joinData.split(","))
-
   const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     district_name: '',
     current_password: '',
     new_password: '',
-    confirm_password: '',
-    profile_picture: null
+    confirm_password: ''
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -33,9 +32,18 @@ const Profile = () => {
         email: user.email || '',
         district_name: user.district_name || ''
       }));
-      setPreviewImage("http://localhost:5000/" + user.profile_picture || null);
+      setPreviewImage(user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : null);
     }
   }, [user]);
+
+  // Cleanup preview URL when component unmounts or preview changes
+  useEffect(() => {
+    return () => {
+      if (previewImage) {
+        cleanupPreview(previewImage);
+      }
+    };
+  }, [previewImage]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -47,12 +55,17 @@ const Profile = () => {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Email is invalid';
     }
-    if (formData.new_password) {
-      if (formData.new_password.length < 6) {
-        newErrors.new_password = 'Password must be at least 6 characters';
+    if (showPasswordChange) {
+      if (!formData.current_password) {
+        newErrors.current_password = 'Current password is required';
       }
-      if (formData.new_password !== formData.confirm_password) {
-        newErrors.confirm_password = 'Passwords do not match';
+      if (formData.new_password) {
+        if (formData.new_password.length < 6) {
+          newErrors.new_password = 'Password must be at least 6 characters';
+        }
+        if (formData.new_password !== formData.confirm_password) {
+          newErrors.confirm_password = 'Passwords do not match';
+        }
       }
     }
     setErrors(newErrors);
@@ -60,20 +73,11 @@ const Profile = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-
-    if (name === 'profile_picture' && files[0]) {
-      setFormData(prev => ({
-        ...prev,
-        profile_picture: files[0]
-      }));
-      setPreviewImage(URL.createObjectURL(files[0]));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
 
     if (errors[name]) {
       setErrors(prev => ({
@@ -83,29 +87,57 @@ const Profile = () => {
     }
   };
 
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    setUploadError(null);
+
+    // Validate the file
+    const validationErrors = validateImage(file);
+    if (validationErrors.length > 0) {
+      setUploadError(validationErrors[0]);
+      return;
+    }
+
+    // Create preview and set file
+    const preview = createImagePreview(file);
+    setSelectedFile(file);
+    setPreviewImage(preview);
+  };
+
+  const handleAvatarUpload = async () => {
+    if (!selectedFile) return;
+
+    setUploadError(null);
+    const result = await uploadAvatar(user.id, selectedFile);
+
+    if (result.success) {
+      // login(result.data); // Update user context with new data
+      setSelectedFile(null);
+    } else {
+      setUploadError(result.error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
     setIsSubmitting(true);
     try {
-      const formDataToSend = new FormData();
-      Object.keys(formData).forEach(key => {
-        if (formData[key] !== null) {
-          formDataToSend.append(key, formData[key]);
-        }
-      });
-      // /update-profile/:id
-      const response = await api.put('/auth/update-profile/' + user.id, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
+      const response = await api.put('/auth/update-profile/' + user.id, formData);
 
       if (response.data.success) {
         setSubmitStatus('success');
-        login(response.data.data); // Update user context with new data
+        login(response.data.data);
         setIsEditing(false);
+        setShowPasswordChange(false);
+        // Reset password fields
+        setFormData(prev => ({
+          ...prev,
+          current_password: '',
+          new_password: '',
+          confirm_password: ''
+        }));
       }
     } catch (error) {
       setSubmitStatus('error');
@@ -133,7 +165,10 @@ const Profile = () => {
       label: 'District',
       type: 'text',
       placeholder: 'Enter your district'
-    },
+    }
+  ];
+
+  const passwordFields = [
     {
       name: 'current_password',
       label: 'Current Password',
@@ -157,58 +192,107 @@ const Profile = () => {
   if (!user) {
     return (
       <div className="container py-5">
-        <div className="alert alert-warning text-center">
+        <Alert variant="warning" className="text-center">
           No user data found. Please log in.
-        </div>
+        </Alert>
       </div>
     );
   }
 
   return (
     <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-md-8">
-          <div className="card shadow">
-            <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-              <h3 className="mb-0">My Profile</h3>
-              <button
-                className="btn btn-light"
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                {isEditing ? 'Cancel' : 'Edit Profile'}
-              </button>
-            </div>
-            <div className="card-body">
-              <div className="text-center mb-4">
-                <div className="position-relative d-inline-block">
-                  {previewImage ? (
-                    <img
-                      src={previewImage}
-                      alt="Profile"
-                      className="rounded-circle"
-                      style={{ width: '150px', height: '150px', objectFit: 'cover' }}
-                    />
-                  ) : (
-                    <i className="fas fa-user-circle fa-6x text-secondary"></i>
-                  )}
-                  {isEditing && (
+      <Card className="shadow">
+        <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
+          <h3 className="mb-0">My Profile</h3>
+          <Button
+            variant="light"
+            onClick={() => {
+              setIsEditing(!isEditing);
+              if (!isEditing) {
+                setShowPasswordChange(false);
+              }
+            }}
+          >
+            {isEditing ? 'Cancel' : 'Edit Profile'}
+          </Button>
+        </Card.Header>
+        <Card.Body>
+          <Row>
+            {/* Left Column - Profile Picture */}
+            <Col md={4} className="text-center mb-4 mb-md-0">
+              <div className="position-relative d-inline-block">
+                {previewImage ? (
+                  <Image
+                    src={previewImage}
+                    alt="Profile"
+                    roundedCircle
+                    fluid
+                    style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                  />
+                ) : (
+                  <div
+                    className="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
+                    style={{ width: '200px', height: '200px' }}
+                  >
+                    <i className="fas fa-user fa-4x text-white"></i>
+                  </div>
+                )}
+                {isEditing && (
+                  <div className="mt-3">
                     <label
-                      className="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-2"
+                      className="btn btn-outline-primary btn-sm"
                       style={{ cursor: 'pointer' }}
                     >
-                      <i className="fas fa-camera"></i>
+                      <i className="fas fa-camera me-2"></i>
+                      Change Photo
                       <input
                         type="file"
-                        name="profile_picture"
                         className="d-none"
                         accept="image/*"
-                        onChange={handleChange}
+                        onChange={handleFileChange}
                       />
                     </label>
-                  )}
-                </div>
+                    {selectedFile && (
+                      <div className="mt-2">
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={handleAvatarUpload}
+                          disabled={!!uploadError}
+                        >
+                          <i className="fas fa-upload me-2"></i>
+                          Upload
+                        </Button>
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          className="ms-2"
+                          onClick={() => {
+                            setSelectedFile(null);
+                            setPreviewImage(user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : null);
+                            setUploadError(null);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
+                    {uploadError && (
+                      <div className="text-danger mt-2 small">{uploadError}</div>
+                    )}
+                  </div>
+                )}
               </div>
+              {!isEditing && (
+                <div className="mt-3">
+                  <h5>{user.name}</h5>
+                  <p className="text-muted mb-0">{user.role}</p>
+                </div>
+              )}
+            </Col>
 
+            {/* Right Column - Profile Details */}
+            <Col md={8}>
               {isEditing ? (
                 <Form
                   formData={formData}
@@ -219,31 +303,72 @@ const Profile = () => {
                   submitStatus={submitStatus}
                   fields={profileFields}
                   submitButtonText="Update Profile"
-                />
+                >
+                  <div className="mt-4">
+                    <Button
+                      variant="link"
+                      className="p-0 mb-3"
+                      onClick={() => setShowPasswordChange(!showPasswordChange)}
+                    >
+                      {showPasswordChange ? 'Hide Password Change' : 'Change Password'}
+                    </Button>
+                    {showPasswordChange && (
+                      <div className="border rounded p-3 bg-light">
+                        <h5 className="mb-3">Change Password</h5>
+                        {passwordFields.map(field => (
+                          <div key={field.name} className="mb-3">
+                            <label className="form-label">{field.label}</label>
+                            <input
+                              type={field.type}
+                              name={field.name}
+                              value={formData[field.name]}
+                              onChange={handleChange}
+                              className={`form-control ${errors[field.name] ? 'is-invalid' : ''}`}
+                              placeholder={field.placeholder}
+                            />
+                            {errors[field.name] && (
+                              <div className="invalid-feedback">{errors[field.name]}</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </Form>
               ) : (
                 <div className="profile-info">
-                  <h5 className="text-center mb-4">{user.name}</h5>
-                  <ul className="list-group list-group-flush">
-                    <li className="list-group-item">
-                      <strong>Email:</strong> {user.email}
-                    </li>
-                    <li className="list-group-item">
-                      <strong>Role:</strong> {user.role}
-                    </li>
-                    <li className="list-group-item">
-                      <strong>District:</strong> {user.district_name || 'Not specified'}
-                    </li>
-                    <li className="list-group-item">
-                      <strong>Member Since:</strong>{' '}
-                      {new Date(user.created_at).toLocaleString()}
-                    </li>
-                  </ul>
+                  <div className="mb-4">
+                    <h5 className="text-muted mb-3">Personal Information</h5>
+                    <div className="row">
+                      <div className="col-md-6 mb-3">
+                        <p className="mb-1 text-muted">Email</p>
+                        <p className="mb-0">{user.email}</p>
+                      </div>
+                      <div className="col-md-6 mb-3">
+                        <p className="mb-1 text-muted">District</p>
+                        <p className="mb-0">{user.district_name || 'Not specified'}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 className="text-muted mb-3">Account Information</h5>
+                    <div className="row">
+                      <div className="col-md-6 mb-3">
+                        <p className="mb-1 text-muted">Role</p>
+                        <p className="mb-0">{user.role}</p>
+                      </div>
+                      <div className="col-md-6 mb-3">
+                        <p className="mb-1 text-muted">Member Since</p>
+                        <p className="mb-0">{new Date(user.created_at).toLocaleString()}</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
-            </div>
-          </div>
-        </div>
-      </div>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
     </div>
   );
 };
