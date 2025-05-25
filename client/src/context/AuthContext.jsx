@@ -28,6 +28,11 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data.user);
         return response;
     };
+    const getAllUser = async () => {
+        const response = await authService.getAllUser();
+        setUser(response.data.user);
+        return response;
+    };
 
     const logout = () => {
         authService.logout();
@@ -40,6 +45,7 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        getAllUser,
         isAuthenticated: !!user
     };
 
