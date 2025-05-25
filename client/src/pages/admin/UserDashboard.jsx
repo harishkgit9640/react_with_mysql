@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Spinner, Alert, Modal } from 'react-bootstrap';
+import { Table, Card, Spinner, Alert, Modal, Button } from 'react-bootstrap';
 import api from '../../services/api';
 import Form from '../../components/Form';
 import ViewUserModal from './ViewUserModal';
+import AddUserModal from './AddUser';
 
 const UserDashboard = () => {
   // Modal and form states
   const [showEditModal, setShowEditModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -191,8 +193,15 @@ const UserDashboard = () => {
   return (
     <div className="container py-4">
       <Card>
-        <Card.Header className="bg-primary text-white">
+        <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
           <h3 className="mb-0">User Dashboard</h3>
+          <Button
+            variant="light"
+            onClick={() => setShowAddModal(true)}
+            className="d-flex align-items-center gap-2"
+          >
+            <i className="bi bi-plus-circle"></i> Add New User
+          </Button>
         </Card.Header>
         <Card.Body>
           <div className="table-responsive">
@@ -290,6 +299,16 @@ const UserDashboard = () => {
           />
         </Modal.Body>
       </Modal>
+
+      {/* Add User Modal */}
+      <AddUserModal
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        onSuccess={() => {
+          fetchAllUser();
+          setShowAddModal(false);
+        }}
+      />
     </div>
   );
 };

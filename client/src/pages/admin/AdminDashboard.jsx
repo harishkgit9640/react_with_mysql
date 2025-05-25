@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Spinner, Alert } from 'react-bootstrap';
+import { Table, Card, Spinner, Alert, Button } from 'react-bootstrap';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import ViewProjectModal from '../admin/ViewProjectModal';
 import EditProjectModal from '../admin/EditProjectModal';
+import AddProjectModal from '../admin/AddProject';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -13,6 +14,7 @@ const AdminDashboard = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const query_cond = (user.role !== "admin" ? user.district_name : "admin")
 
@@ -114,8 +116,15 @@ const AdminDashboard = () => {
   return (
     <div className="container py-4">
       <Card>
-        <Card.Header className="bg-primary text-white">
+        <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
           <h3 className="mb-0">Projects Dashboard</h3>
+          <Button
+            variant="light"
+            onClick={() => setShowAddModal(true)}
+            className="d-flex align-items-center gap-2"
+          >
+            <i className="bi bi-plus-circle"></i> Add New Project
+          </Button>
         </Card.Header>
         <Card.Body>
           <div className="table-responsive">
@@ -203,6 +212,16 @@ const AdminDashboard = () => {
         }}
         project={selectedProject}
         onUpdate={handleUpdate}
+      />
+
+      {/* Add Project Modal */}
+      <AddProjectModal
+        show={showAddModal}
+        onHide={() => setShowAddModal(false)}
+        onSuccess={() => {
+          fetchProjects();
+          setShowAddModal(false);
+        }}
       />
     </div>
   );
