@@ -81,7 +81,7 @@ const Register = () => {
       login(data);
 
       // Redirect to dashboard
-      navigate('/user-dashboard', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       setErrors(prev => ({
         ...prev,

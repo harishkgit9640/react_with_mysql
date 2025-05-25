@@ -9,7 +9,7 @@ export const projectController = {
     createProject: async (req, res) => {
         try {
             const {
-                project_name, status, level, description, url, implemented_in_dist,
+                project_name, status, level, description, project_url, implemented_in_dist,
                 dist_login_avl, nodal_office, nodal_contact_no, dio_id_avl,
                 dio_id, manpower_avl, mp_name, mp_post, mp_contact_no,
                 spc_name, handling_officer, contact_no, district_name, remarks
@@ -17,13 +17,13 @@ export const projectController = {
 
             const [result] = await pool.query(
                 `INSERT INTO all_projects (
-                    project_name, status, level, description, url, implemented_in_dist,
+                    project_name, status, level, description, project_url, implemented_in_dist,
                     dist_login_avl, nodal_office, nodal_contact_no, dio_id_avl,
                     dio_id, manpower_avl, mp_name, mp_post, mp_contact_no,
                     spc_name, handling_officer, contact_no, district_name, remarks
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    project_name, status, level, description, url, implemented_in_dist,
+                    project_name, status, level, description, project_url, implemented_in_dist,
                     dist_login_avl, nodal_office, nodal_contact_no, dio_id_avl,
                     dio_id, manpower_avl, mp_name, mp_post, mp_contact_no,
                     spc_name, handling_officer, contact_no, district_name, remarks
@@ -101,7 +101,7 @@ export const projectController = {
         try {
             const updateData = {};
             const allowedFields = [
-                'project_name', 'status', 'level', 'description', 'url', 'implemented_in_dist',
+                'project_name', 'status', 'level', 'description', 'project_url', 'implemented_in_dist',
                 'dist_login_avl', 'nodal_office', 'nodal_contact_no', 'dio_id_avl',
                 'dio_id', 'manpower_avl', 'mp_name', 'mp_post', 'mp_contact_no',
                 'spc_name', 'handling_officer', 'contact_no', 'district_name', 'remarks'

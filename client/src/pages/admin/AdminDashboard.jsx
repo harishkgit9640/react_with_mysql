@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Table, Card, Spinner, Alert } from 'react-bootstrap';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
+import ViewProjectModal from '../../components/ViewProjectModal';
+import EditProjectModal from '../../components/EditProjectModal';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { user } = useAuth();
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [showViewModal, setShowViewModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const query_cond = (user.role !== "admin" ? user.district_name : "admin")
 
@@ -33,26 +38,60 @@ const AdminDashboard = () => {
 
   // status toggler
   const toggleUserStatus = async (project_id) => {
-    await api.put('/projects/toggle-status/' + project_id);
-    fetchProjects();
-  }
-  // Action handlers
-  const handleEdit = (project_id) => {
-    // Implement edit functionality
-    console.log('Edit project:', project_id);
+    try {
+      await api.put('/projects/toggle-status/' + project_id);
+      fetchProjects();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error toggling project status');
+    }
+  };
+
+  // View project handler
+  const handleView = async (project_id) => {
+    try {
+      const response = await api.get('/projects/get-project/' + project_id);
+      if (response.data.success) {
+        setSelectedProject(response.data.data);
+        setShowViewModal(true);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error fetching project details');
+    }
+  };
+
+  // Edit project handler
+  const handleEdit = async (project_id) => {
+    try {
+      const response = await api.get('/projects/get-project/' + project_id);
+      if (response.data.success) {
+        setSelectedProject(response.data.data);
+        setShowEditModal(true);
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Error fetching project details');
+    }
+  };
+
+  // Update project handler
+  const handleUpdate = async (project_id, formData) => {
+    const response = await api.put('/projects/update-project/' + project_id, formData);
+    if (response.data.success) {
+      fetchProjects();
+      return true;
+    }
+    throw new Error(response.data.message || 'Failed to update project');
   };
 
   const handleDelete = async (project_id) => {
-    await api.delete('/projects/delete-project/' + project_id);
-    fetchProjects();
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      try {
+        await api.delete('/projects/delete-project/' + project_id);
+        fetchProjects();
+      } catch (err) {
+        setError(err.response?.data?.message || 'Error deleting project');
+      }
+    }
   };
-  const ViewProject = async (project_id) => {
-    console.log(project_id);
-
-    // await api.get('/projects/get-project/' + project_id);
-    // fetchProjects();
-  };
-
 
   if (loading) {
     return (
@@ -96,7 +135,7 @@ const AdminDashboard = () => {
               <tbody>
                 {projects.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="text-center">No projects found</td>
+                    <td colSpan="8" className="text-center">No projects found</td>
                   </tr>
                 ) : (
                   projects.map((project, index) => (
@@ -107,29 +146,33 @@ const AdminDashboard = () => {
                       <td>{project.level}</td>
                       <td>{project.district_name || "NA"}</td>
                       <td>
-                        <span onClick={() => toggleUserStatus(project.id)} className={`badge bg-${getStatusColor(project.status)}`}>
+                        <span
+                          onClick={() => toggleUserStatus(project.id)}
+                          className={`badge bg-${getStatusColor(project.status)} cursor-pointer`}
+                          style={{ cursor: 'pointer' }}
+                        >
                           {project.status}
                         </span>
                       </td>
                       <td>{new Date(project.created_at).toLocaleDateString()}</td>
                       <td>
                         <button
+                          className="btn btn-sm btn-info me-2"
+                          onClick={() => handleView(project.id)}
+                        >
+                          <i className="bi bi-eye"></i> View
+                        </button>
+                        <button
                           className="btn btn-sm btn-primary me-2"
                           onClick={() => handleEdit(project.id)}
-                        > Edit
-                          <i className="bi bi-edit"></i>
+                        >
+                          <i className="bi bi-pencil"></i> Edit
                         </button>
                         <button
-                          className="btn btn-sm btn-danger me-2"
+                          className="btn btn-sm btn-danger"
                           onClick={() => handleDelete(project.id)}
-                        > Delete
-                          <i className="fas fa-trash"></i>
-                        </button>
-                        <button
-                          className="btn btn-sm btn-info"
-                          onClick={() => ViewProject(project.id)}
-                        > View
-                          <i className="fas fa-trash"></i>
+                        >
+                          <i className="bi bi-trash"></i> Delete
                         </button>
                       </td>
                     </tr>
@@ -140,6 +183,27 @@ const AdminDashboard = () => {
           </div>
         </Card.Body>
       </Card>
+
+      {/* View Project Modal */}
+      <ViewProjectModal
+        show={showViewModal}
+        onHide={() => {
+          setShowViewModal(false);
+          setSelectedProject(null);
+        }}
+        project={selectedProject}
+      />
+
+      {/* Edit Project Modal */}
+      <EditProjectModal
+        show={showEditModal}
+        onHide={() => {
+          setShowEditModal(false);
+          setSelectedProject(null);
+        }}
+        project={selectedProject}
+        onUpdate={handleUpdate}
+      />
     </div>
   );
 };
@@ -159,6 +223,5 @@ const getStatusColor = (status) => {
       return 'secondary';
   }
 };
-
 
 export default AdminDashboard;

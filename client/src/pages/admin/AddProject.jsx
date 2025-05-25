@@ -9,7 +9,7 @@ const AddProject = () => {
         level: '',
         status: '',
         implemented_in_dist: '',
-        District: '',
+        district_name: '',
         description: '',
         dist_login_avl: 'No',
         nodal_office: '',
@@ -112,9 +112,9 @@ const AddProject = () => {
 
                         <div className="col-md-4">
                             <input
-                                name="District"
+                                name="district_name"
                                 placeholder="District"
-                                value={formData.District}
+                                value={formData.district_name}
                                 onChange={handleChange}
                                 className="form-control"
                             />
