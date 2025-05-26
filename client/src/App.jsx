@@ -7,7 +7,6 @@ import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
 // import AddProject from './pages/admin/AddProject'
 import DashboardOverview from './pages/admin/DashboardOverview';
-
 import ContactManagement from './pages/admin/ContactManagement'
 
 // Import pages
@@ -41,6 +40,16 @@ const App = () => {
             />
 
             {/* Protected User Routes */}
+
+            <Route
+              path="/dashboard-overview"
+              element={
+                <ProtectedRoute>
+                  <DashboardOverview />
+                </ProtectedRoute>
+              }
+            />
+
             <Route
               path="/profile"
               element={
@@ -50,15 +59,6 @@ const App = () => {
               }
             />
 
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
-            
             <Route
               path="/dashboard"
               element={
