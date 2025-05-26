@@ -5,7 +5,9 @@ import Footer from './components/Footer'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import PublicRoute from './components/PublicRoute'
-import AddProject from './pages/admin/AddProject'
+// import AddProject from './pages/admin/AddProject'
+import DashboardOverview from './pages/admin/DashboardOverview';
+
 import ContactManagement from './pages/admin/ContactManagement'
 
 // Import pages
@@ -47,6 +49,16 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            
             <Route
               path="/dashboard"
               element={

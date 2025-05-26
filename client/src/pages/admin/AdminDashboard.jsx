@@ -15,8 +15,8 @@ const AdminDashboard = () => {
   const [showViewModal, setShowViewModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-
-  const query_cond = (user.role !== "admin" ? user.district_name : "admin")
+  const isAdmin = user?.role === "admin"
+  const query_cond = (!isAdmin ? user.district_name : "admin")
 
   useEffect(() => {
     fetchProjects();
@@ -115,16 +115,17 @@ const AdminDashboard = () => {
 
   return (
     <div className="container py-4">
+      {/* Projects Table */}
       <Card>
         <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
-          <h3 className="mb-0">Projects Dashboard</h3>
-          <Button
+          <h3 className="mb-0">Projects Management</h3>
+         {isAdmin && <Button
             variant="light"
             onClick={() => setShowAddModal(true)}
             className="d-flex align-items-center gap-2"
           >
             <i className="bi bi-plus-circle"></i> Add New Project
-          </Button>
+          </Button>}
         </Card.Header>
         <Card.Body>
           <div className="table-responsive">
@@ -136,7 +137,7 @@ const AdminDashboard = () => {
                   <th>Description</th>
                   <th>Level</th>
                   <th>District</th>
-                  <th>Status</th>
+                  { isAdmin && <th>Status</th>}
                   <th>Created At</th>
                   <th>Actions</th>
                 </tr>
@@ -154,7 +155,7 @@ const AdminDashboard = () => {
                       <td>{project.description}</td>
                       <td>{project.level}</td>
                       <td>{project.district_name || "NA"}</td>
-                      <td>
+                     { isAdmin && <td>
                         <span
                           onClick={() => toggleUserStatus(project.id)}
                           className={`badge bg-${getStatusColor(project.status)} cursor-pointer`}
@@ -162,7 +163,7 @@ const AdminDashboard = () => {
                         >
                           {project.status}
                         </span>
-                      </td>
+                      </td>}
                       <td>{new Date(project.created_at).toLocaleDateString()}</td>
                       <td>
                         <button
@@ -171,6 +172,8 @@ const AdminDashboard = () => {
                         >
                           <i className="bi bi-eye"></i> View
                         </button>
+                    { isAdmin && 
+                      <>
                         <button
                           className="btn btn-sm btn-primary me-2"
                           onClick={() => handleEdit(project.id)}
@@ -183,6 +186,8 @@ const AdminDashboard = () => {
                         >
                           <i className="bi bi-trash"></i> Delete
                         </button>
+                      </>
+                    }
                       </td>
                     </tr>
                   ))
