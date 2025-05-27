@@ -4,6 +4,7 @@ import Form from '../../components/Form';
 import api from '../../services/api';
 import { Card, Row, Col, Button, Image, Alert } from 'react-bootstrap';
 import { validateImage, createImagePreview, uploadAvatar, cleanupPreview } from '../../utils/uploadAvatar';
+import { FaCamera, FaCameraRetro, FaEdit, FaKey, FaUpload, FaUser } from 'react-icons/fa';
 
 const Profile = () => {
   const { user, login } = useAuth();
@@ -234,7 +235,7 @@ const Profile = () => {
                     className="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
                     style={{ width: '200px', height: '200px' }}
                   >
-                    <i className="fas fa-user fa-4x text-white"></i>
+                    <FaUser/>
                   </div>
                 )}
                 {isEditing && (
@@ -243,8 +244,7 @@ const Profile = () => {
                       className="btn btn-outline-primary btn-sm"
                       style={{ cursor: 'pointer' }}
                     >
-                      <i className="fas fa-camera me-2"></i>
-                      Change Photo
+                     <FaCamera size={18}/>  Change Photo
                       <input
                         type="file"
                         className="d-none"
@@ -260,8 +260,8 @@ const Profile = () => {
                           onClick={handleAvatarUpload}
                           disabled={!!uploadError}
                         >
-                          <i className="fas fa-upload me-2"></i>
-                          Upload
+                        <FaUpload/> Upload
+                          
                         </Button>
                         <Button
                           variant="outline-secondary"
@@ -294,47 +294,28 @@ const Profile = () => {
             {/* Right Column - Profile Details */}
             <Col md={8}>
               {isEditing ? (
-                <Form
-                  formData={formData}
-                  errors={errors}
-                  handleChange={handleChange}
-                  handleSubmit={handleSubmit}
-                  isSubmitting={isSubmitting}
-                  submitStatus={submitStatus}
-                  fields={profileFields}
-                  submitButtonText="Update Profile"
-                >
-                  <div className="mt-4">
+                <>
+                  <Form
+                    formData={formData}
+                    errors={errors}
+                    handleChange={handleChange}
+                    handleSubmit={handleSubmit}
+                    isSubmitting={isSubmitting}
+                    submitStatus={submitStatus}
+                    fields={[...profileFields, ...(showPasswordChange ? passwordFields : [])]}
+                    submitButtonText="Update Profile"
+                  />
+                  <div className="mt-3">
                     <Button
-                      variant="link"
-                      className="p-0 mb-3"
+                      variant="outline-primary"
+                      className="mb-3"
                       onClick={() => setShowPasswordChange(!showPasswordChange)}
                     >
-                      {showPasswordChange ? 'Hide Password Change' : 'Change Password'}
+                      <FaKey/>
+                      {showPasswordChange ? ' Hide Password Change' : ' Change Password'}
                     </Button>
-                    {showPasswordChange && (
-                      <div className="border rounded p-3 bg-light">
-                        <h5 className="mb-3">Change Password</h5>
-                        {passwordFields.map(field => (
-                          <div key={field.name} className="mb-3">
-                            <label className="form-label">{field.label}</label>
-                            <input
-                              type={field.type}
-                              name={field.name}
-                              value={formData[field.name]}
-                              onChange={handleChange}
-                              className={`form-control ${errors[field.name] ? 'is-invalid' : ''}`}
-                              placeholder={field.placeholder}
-                            />
-                            {errors[field.name] && (
-                              <div className="invalid-feedback">{errors[field.name]}</div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
                   </div>
-                </Form>
+                </>
               ) : (
                 <div className="profile-info">
                   <div className="mb-4">

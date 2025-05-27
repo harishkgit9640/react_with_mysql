@@ -405,3 +405,46 @@ export const updateProfile = async (req, res) => {
         });
     }
 };
+
+// Get dashboard statistics
+export const getDashboardStats = async (req, res) => {
+    try {
+        // Get total users and active/inactive counts
+        const [userStats] = await db.query(`
+            SELECT 
+                COUNT(*) as total_users,
+                SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_users,
+                SUM(CASE WHEN status = 'inactive' THEN 1 ELSE 0 END) as inactive_users
+            FROM users
+        `);
+
+        // Get total projects and active/inactive counts
+        const [projectStats] = await db.query(`
+            SELECT 
+                COUNT(*) as total_projects,
+                SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END) as active_projects,
+                SUM(CASE WHEN status = 'Inactive' THEN 1 ELSE 0 END) as inactive_projects
+            FROM all_projects
+        `);
+
+        // Get total contact_details
+        const [contactStats] = await db.query(`
+            SELECT COUNT(*) as total_contacts FROM contact_details
+        `);
+
+        res.json({
+            success: true,
+            data: {
+                users: userStats[0],
+                projects: projectStats[0],
+                contacts: contactStats[0]
+            }
+        });
+    } catch (error) {
+        console.error('Get dashboard stats error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching dashboard statistics'
+        });
+    }
+};
