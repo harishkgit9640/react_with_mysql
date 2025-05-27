@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import ViewProjectModal from '../admin/ViewProjectModal';
 import EditProjectModal from '../admin/EditProjectModal';
 import AddProjectModal from '../admin/AddProject';
-import {FaTrash, FaUser, FaEye} from 'react-icons/fa';
+import {FaTrash, FaPlus, FaEye, FaPencilAlt} from 'react-icons/fa';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -201,7 +201,7 @@ const AdminDashboard = () => {
               onClick={() => setShowAddModal(true)}
               className="d-flex align-items-center gap-2"
             >
-              <i className="bi bi-plus-circle"></i> Add New Project
+              <FaPlus/> Add New Project
             </Button>
           )}
         </Card.Header>
@@ -332,7 +332,7 @@ const AdminDashboard = () => {
                             className="btn btn-sm btn-info me-2"
                             onClick={() => handleView(project.id)}
                           >
-                            <i className="bi bi-eye"></i> View
+                            <FaEye/> View
                           </button>
                           {isAdmin && (
                             <>
@@ -340,13 +340,13 @@ const AdminDashboard = () => {
                                 className="btn btn-sm btn-primary me-2"
                                 onClick={() => handleEdit(project.id)}
                               >
-                                <i className="bi bi-pencil"></i> Edit
+                              <FaPencilAlt /> Edit
                               </button>
                               <button
                                 className="btn btn-sm btn-danger"
                                 onClick={() => handleDelete(project.id)}
                               >
-                                <i className="bi bi-trash"></i> Delete
+                                <FaTrash /> Delete
                               </button>
                             </>
                           )}

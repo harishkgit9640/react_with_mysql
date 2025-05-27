@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Spinner, Alert, Modal } from 'react-bootstrap';
+import { Table, Card, Spinner, Alert, Modal, Fade } from 'react-bootstrap';
 import api from '../../services/api';
+import {FaTrash,  FaEye} from 'react-icons/fa';
 
 const ContactManagement = () => {
     const [contacts, setContacts] = useState([]);
@@ -107,13 +108,13 @@ const ContactManagement = () => {
                                                     className="btn btn-sm btn-info me-2"
                                                     onClick={() => handleView(contact.id)}
                                                 >
-                                                    <i className="bi bi-eye"></i> View
+                                                    <FaEye/> View
                                                 </button>
                                                 <button
                                                     className="btn btn-sm btn-danger"
                                                     onClick={() => handleDelete(contact.id)}
                                                 >
-                                                    <i className="bi bi-trash"></i> Delete
+                                                   <FaTrash/> Delete
                                                 </button>
                                             </td>
                                         </tr>

@@ -4,6 +4,8 @@ import api from '../../services/api';
 import Form from '../../components/Form';
 import ViewUserModal from './ViewUserModal';
 import AddUserModal from './AddUser';
+import {FaTrash, FaPlus, FaEye, FaPencilAlt} from 'react-icons/fa';
+
 
 const UserDashboard = () => {
   // Modal and form states
@@ -200,7 +202,7 @@ const UserDashboard = () => {
             onClick={() => setShowAddModal(true)}
             className="d-flex align-items-center gap-2"
           >
-            <i className="bi bi-plus-circle"></i> Add New User
+            <FaPlus/> Add New User
           </Button>
         </Card.Header>
         <Card.Body>
@@ -242,19 +244,19 @@ const UserDashboard = () => {
                           className="btn btn-sm btn-info me-2"
                           onClick={() => handleView(user.id)}
                         >
-                          <i className="bi bi-eye"></i> View
+                          <FaEye/> View
                         </button>
                         <button
                           className="btn btn-sm btn-primary me-2"
                           onClick={() => handleEdit(user.id)}
                         >
-                          <i className="bi bi-pencil"></i> Edit
+                         <FaPencilAlt/> Edit
                         </button>
                         <button
                           className="btn btn-sm btn-danger"
                           onClick={() => handleDelete(user.id)}
                         >
-                          <i className="bi bi-trash"></i> Delete
+                         <FaTrash/> Delete
                         </button>
                       </td>
                     </tr>
