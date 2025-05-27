@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import ViewProjectModal from '../admin/ViewProjectModal';
 import EditProjectModal from '../admin/EditProjectModal';
 import AddProjectModal from '../admin/AddProject';
-import DashboardOverview from './DashboardOverview';
+import {FaTrash, FaUser, FaEye} from 'react-icons/fa';
 
 const AdminDashboard = () => {
   const [projects, setProjects] = useState([]);
@@ -191,9 +191,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="container py-4">
-      {/* Dashboard Overview */}
-      <DashboardOverview />
-
       {/* Projects Table */}
       <Card className="mt-4">
         <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
