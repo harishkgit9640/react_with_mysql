@@ -36,11 +36,12 @@ const Footer = () => {
             <ul className="list-unstyled text-light">
               <li className="mb-2">
                 <i className="bi bi-geo-alt me-2"></i>
-                GURUKUL CAMPUS ADMINISTRATIVE BUILDING NIC GAURELA PENDRA MARWAHI,CHHATTISGARH
+                National-Informatics-Centre,Gaurela-Pendra-Marwahi<br/>
+                Chhattisgarh
               </li>
               <li className="mb-2">
                 <i className="bi bi-envelope me-2"></i>
-                gpm nic.in
+                dio-gpm-ct@nic.in
               </li>
               <li className="mb-2">
                 <i className="bi bi-telephone me-2"></i>

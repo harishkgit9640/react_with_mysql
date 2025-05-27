@@ -126,20 +126,20 @@ const Contacts = () => {
                 <h5 className="mb-3">Address</h5>
                 <p className="mb-0">
                   <i className="fas fa-map-marker-alt me-2 text-primary"></i>
-                  123 Business Street<br />
-                  New York, NY 10001<br />
-                  United States
+                  National Informatics Centre<br />
+                  Gaurela-pendra-marwahi<br />
+                  Chhattisgarh
                 </p>
               </div>
               <div className="mb-4">
                 <h5 className="mb-3">Contact</h5>
                 <p className="mb-2">
                   <i className="fas fa-phone me-2 text-primary"></i>
-                  +1 (555) 123-4567
+                  +91 9993426936
                 </p>
                 <p className="mb-0">
                   <i className="fas fa-envelope me-2 text-primary"></i>
-                  contact@example.com
+                  dio-gpm-ct@nic.in
                 </p>
               </div>
               <div>
