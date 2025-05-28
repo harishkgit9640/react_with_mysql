@@ -4,7 +4,7 @@ import api from '../../services/api';
 import Form from '../../components/Form';
 import ViewUserModal from './ViewUserModal';
 import AddUserModal from './AddUser';
-import {FaTrash, FaPlus, FaEye, FaPencilAlt} from 'react-icons/fa';
+import {FaTrash, FaPlus, FaEye, FaPencilAlt, FaLock} from 'react-icons/fa';
 
 
 const UserDashboard = () => {
@@ -55,6 +55,82 @@ const UserDashboard = () => {
     }
   };
 
+  // Reset password modal state
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [resetFormData, setResetFormData] = useState({
+    password: '',
+    confirm_password: ''
+  });
+
+  // Reset password handler
+  const handlePassword = async (userId) => {
+    try {
+      const response = await api.get(`/auth/get-user/${userId}`);
+      if (response.data.success) {
+        const userData = response.data.data;
+        setSelectedUser(userData);
+        setResetFormData({
+          password: '',
+          confirm_password: ''
+        });
+        setShowResetModal(true);
+      }
+    } catch (err) {
+      setErrors({ general: err.response?.data?.message || 'Error fetching user details' });
+    }
+  };
+
+  const handleResetFormChange = (e) => {
+    const { name, value } = e.target;
+    setResetFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateResetForm = () => {
+    const newErrors = {};
+    if (!resetFormData.password) {
+      newErrors.password = 'Password is required';
+    } else if (resetFormData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    if (!resetFormData.confirm_password) {
+      newErrors.confirm_password = 'Please confirm your password';
+    } else if (resetFormData.password !== resetFormData.confirm_password) {
+      newErrors.confirm_password = 'Passwords do not match';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // reset password
+  const handleResetPassword = async (e) => {
+    e.preventDefault();
+    if (!validateResetForm()) return;
+
+    try {
+      const response = await api.put(`/auth/reset-password/${selectedUser.id}`, {
+        password: resetFormData.password
+      });
+
+      if (response.data.success) {
+        setShowResetModal(false);
+        setResetFormData({ password: '', confirm_password: '' });
+        setErrors({});
+        alert('Password reset successfully');
+      }
+    } catch (err) {
+      setErrors({ general: err.response?.data?.message || 'Error resetting password' });
+    }
+  };
+  
   // View user handler
   const handleView = async (userId) => {
     try {
@@ -253,10 +329,16 @@ const UserDashboard = () => {
                          <FaPencilAlt/> Edit
                         </button>
                         <button
-                          className="btn btn-sm btn-danger"
+                          className="btn btn-sm btn-danger me-2"
                           onClick={() => handleDelete(user.id)}
                         >
                          <FaTrash/> Delete
+                        </button>
+                        <button
+                          className="btn btn-sm btn-primary"
+                          onClick={() => handlePassword(user.id)}
+                        >
+                         <FaLock/> Reset Password
                         </button>
                       </td>
                     </tr>
@@ -299,6 +381,50 @@ const UserDashboard = () => {
             fields={formFields}
             submitButtonText="Update User"
           />
+        </Modal.Body>
+      </Modal>
+
+      {/* Reset Password Modal */}
+      <Modal show={showResetModal} onHide={() => setShowResetModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Reset Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleResetPassword}>
+            <div className="mb-3">
+              <label className="form-label">New Password</label>
+              <input
+                type="password"
+                name="password"
+                value={resetFormData.password}
+                onChange={handleResetFormChange}
+                className={`form-control ${errors.password ? 'is-invalid' : ''}`}
+                placeholder="Enter new password"
+              />
+              {errors.password && <div className="invalid-feedback">{errors.password}</div>}
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Confirm Password</label>
+              <input
+                type="password"
+                name="confirm_password"
+                value={resetFormData.confirm_password}
+                onChange={handleResetFormChange}
+                className={`form-control ${errors.confirm_password ? 'is-invalid' : ''}`}
+                placeholder="Confirm new password"
+              />
+              {errors.confirm_password && <div className="invalid-feedback">{errors.confirm_password}</div>}
+            </div>
+            {errors.general && <Alert variant="danger">{errors.general}</Alert>}
+            <div className="d-flex justify-content-end gap-2">
+              <Button variant="secondary" onClick={() => setShowResetModal(false)}>
+                Cancel
+              </Button>
+              <Button variant="primary" type="submit">
+                Reset Password
+              </Button>
+            </div>
+          </form>
         </Modal.Body>
       </Modal>
 

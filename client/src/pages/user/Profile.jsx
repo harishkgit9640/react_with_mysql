@@ -25,6 +25,9 @@ const Profile = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadError, setUploadError] = useState(null);
 
+  const isAdmin = user?.role === "admin";
+
+
   useEffect(() => {
     if (user) {
       setFormData(prev => ({
@@ -306,14 +309,14 @@ const Profile = () => {
                     submitButtonText="Update Profile"
                   />
                   <div className="mt-3">
-                    <Button
+                    { isAdmin && <Button
                       variant="outline-primary"
                       className="mb-3"
                       onClick={() => setShowPasswordChange(!showPasswordChange)}
                     >
                       <FaKey/>
                       {showPasswordChange ? ' Hide Password Change' : ' Change Password'}
-                    </Button>
+                    </Button>}
                   </div>
                 </>
               ) : (

@@ -27,9 +27,10 @@ const App = () => {
         <main className="flex-grow-1 container mx-auto px-4 py-8">
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/contacts" element={<Contacts />} />
+            <Route path="/dashboard-overview" element={<DashboardOverview />} />
+            
             <Route
               path="/login"
               element={
@@ -40,15 +41,6 @@ const App = () => {
             />
 
             {/* Protected User Routes */}
-
-            <Route
-              path="/dashboard-overview"
-              element={
-                <ProtectedRoute>
-                  <DashboardOverview />
-                </ProtectedRoute>
-              }
-            />
 
             <Route
               path="/profile"

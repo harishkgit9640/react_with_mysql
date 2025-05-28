@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import promisePool from '../config/db.config.js';
 import { validateEmail, validatePassword } from '../utils/validators.js';
-import { upload, handleMulterError, deleteOldAvatar } from '../middleware/uploadAvatar.js';
 import path from 'path';
 import fs from 'fs';
 
@@ -405,6 +404,48 @@ export const updateProfile = async (req, res) => {
         });
     }
 };
+
+// reset password - /auth/reset-password/
+export const resetPassword = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const { password } = req.body;
+
+        // Check if user exists
+        const [users] = await db.query(
+            'SELECT id FROM users WHERE id = ?',
+            [userId]
+        );
+
+        if (users.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Update user's password
+        await db.query(
+            'UPDATE users SET password = ? WHERE id = ?',
+            [hashedPassword, userId]
+        );
+
+        res.json({
+            success: true,
+            message: 'Password reset successfully'
+        });
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error resetting password',
+            error: error.message
+        });
+    }
+}
 
 // Get dashboard statistics
 export const getDashboardStats = async (req, res) => {

@@ -24,21 +24,19 @@ function NavbarComponent() {
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Link to={isAuthenticated ? '/dashboard-overview' : '/'} className="navbar-brand">LOGO.</Link>
+        <Link to='/dashboard-overview' className="navbar-brand">LOGO.</Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            {isAuthenticated ? (
+            <Link to="/dashboard" className="nav-link">Projects</Link>
+            {isAdmin && isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="nav-link">Dashboard</Link>
-                {isAdmin && (<>
                   <Link to="/user-dashboard" className="nav-link">User Details</Link>
                   <Link to="/contact-management" className="nav-link">Contact Details</Link>
-                </>)}
-              </>
+                </>
+
             ) : (
               <>
-                <Link to="/" className="nav-link">Home</Link>
                 <Link to="/about" className="nav-link">About</Link>
                 <Link to="/contacts" className="nav-link">Contacts</Link>
               </>
