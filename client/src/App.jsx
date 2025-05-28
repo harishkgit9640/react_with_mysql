@@ -10,8 +10,7 @@ import DashboardOverview from './pages/admin/DashboardOverview';
 import ContactManagement from './pages/admin/ContactManagement'
 
 // Import pages
-import Home from './pages/user/Home'
-import About from './pages/user/About'
+import AboutUs from './pages/user/AboutUs'
 import Profile from './pages/user/Profile'
 import Contacts from './pages/user/Contacts'
 import Login from './pages/auth/Login'
@@ -27,7 +26,7 @@ const App = () => {
         <main className="flex-grow-1 container mx-auto px-4 py-8">
           <Routes>
             {/* Public Routes */}
-            <Route path="/about" element={<About />} />
+            <Route path="/about" element={<AboutUs />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/dashboard-overview" element={<DashboardOverview />} />
             

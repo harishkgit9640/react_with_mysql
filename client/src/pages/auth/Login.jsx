@@ -83,7 +83,7 @@ const Login = () => {
   };
 
   return (
-    <div className="container">
+    <div className="container mb-5">
       <div className="row justify-content-center">
         <div className="col-md-6 col-lg-5">
           <div className="card shadow-lg border-0 rounded-lg mt-5">
