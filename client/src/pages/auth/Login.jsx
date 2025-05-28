@@ -70,7 +70,7 @@ const Login = () => {
       await login(formData);
 
       // Redirect to the page they tried to visit or dashboard
-      const from = location.state?.from?.pathname || '/';
+      const from = location.state?.from?.pathname || '/dashboard-overview';
       navigate(from, { replace: true });
     } catch (error) {
       setErrors(prev => ({

@@ -50,34 +50,10 @@ const DashboardOverview = () => {
         <div className="container py-4">
             <h2 className="mb-4">Dashboard Overview</h2>
             <Row>
-                {/* Users Stats */}
-                <Col md={4} className="mb-4">
-                    <Card className="h-100 shadow-sm">
-                        <Card.Body>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 className="text-muted mb-2">Total Users</h6>
-                                    <h3 className="mb-0">{stats.users.total_users}</h3>
-                                    <div className="mt-2">
-                                        <span className="text-success me-3">
-                                            Active: {stats.users.active_users}
-                                        </span>
-                                        <span className="text-danger">
-                                            Inactive: {stats.users.inactive_users}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="bg-primary bg-opacity-10 p-3 rounded">
-                                    <FaUsers className="text-primary" size={30} />
-                                </div>
-                            </div>
-                        </Card.Body>
-                    </Card>
-                </Col>
 
                 {/* Projects Stats */}
                 <Col md={4} className="mb-4">
-                    <Card className="h-100 shadow-sm">
+                    <Card className="h-100 shadow-lg bg-success bg-opacity-50">
                         <Card.Body>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div>
@@ -92,7 +68,7 @@ const DashboardOverview = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <div className="bg-success bg-opacity-10 p-3 rounded">
+                                <div className="bg-success bg-opacity-50 p-3 rounded">
                                     <FaProjectDiagram className="text-success" size={30} />
                                 </div>
                             </div>
@@ -100,16 +76,43 @@ const DashboardOverview = () => {
                     </Card>
                 </Col>
 
+
+                {/* Users Stats */}
+                <Col md={4} className="mb-4">
+                    <Card className="h-100 shadow-lg bg-primary bg-opacity-50">
+                        <Card.Body>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 className="text-muted mb-2">Total Users</h6>
+                                    <h3 className="mb-0">{stats.users.total_users}</h3>
+                                    <div className="mt-2">
+                                        <span className="text-success me-3">
+                                            Active: {stats.users.active_users}
+                                        </span>
+                                        <span className="text-danger">
+                                            Inactive: {stats.users.inactive_users}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="bg-primary bg-opacity-50 p-3 rounded">
+                                    <FaUsers className="text-primary" size={30} />
+                                </div>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+
                 {/* Contacts Stats */}
                 <Col md={4} className="mb-4">
-                    <Card className="h-100 shadow-sm">
+                    <Card className="h-100 shadow-lg bg-info bg-opacity-50">
                         <Card.Body>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div>
                                     <h6 className="text-muted mb-2">Total Contacts</h6>
                                     <h3 className="mb-0">{stats.contacts.total_contacts}</h3>
                                 </div>
-                                <div className="bg-info bg-opacity-10 p-3 rounded">
+                                <div className="bg-info bg-opacity-50 p-3 rounded">
                                     <FaEnvelope className="text-info" size={30} />
                                 </div>
                             </div>

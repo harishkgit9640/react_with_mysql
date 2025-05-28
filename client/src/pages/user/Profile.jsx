@@ -5,6 +5,9 @@ import api from '../../services/api';
 import { Card, Row, Col, Button, Image, Alert } from 'react-bootstrap';
 import { validateImage, createImagePreview, uploadAvatar, cleanupPreview } from '../../utils/uploadAvatar';
 import { FaCamera, FaCameraRetro, FaEdit, FaKey, FaUpload, FaUser } from 'react-icons/fa';
+import ADD_PHOTO from '../../assets/Add-photo.png';
+
+
 
 const Profile = () => {
   const { user, login } = useAuth();
@@ -36,7 +39,7 @@ const Profile = () => {
         email: user.email || '',
         district_name: user.district_name || ''
       }));
-      setPreviewImage(user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : null);
+      setPreviewImage(user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : ADD_PHOTO);
     }
   }, [user]);
 
@@ -225,29 +228,22 @@ const Profile = () => {
             {/* Left Column - Profile Picture */}
             <Col md={4} className="text-center mb-4 mb-md-0">
               <div className="position-relative d-inline-block">
-                {previewImage ? (
-                  <Image
-                    src={previewImage}
-                    alt="Profile"
-                    roundedCircle
-                    fluid
-                    style={{ width: '200px', height: '200px', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div
-                    className="rounded-circle bg-secondary d-flex align-items-center justify-content-center"
-                    style={{ width: '200px', height: '200px' }}
-                  >
-                    <FaUser/>
-                  </div>
-                )}
+                {user.profile_picture}
+                <Image
+                  src={user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : ADD_PHOTO}
+                  alt="Profile"
+                  roundedCircle
+                  fluid
+                  style={{ width: '200px', height: '200px', objectFit: 'cover' }}
+                />
+
                 {isEditing && (
                   <div className="mt-3">
                     <label
                       className="btn btn-outline-primary btn-sm"
                       style={{ cursor: 'pointer' }}
                     >
-                     <FaCamera size={18}/>  Change Photo
+                      <FaCamera size={18} />  Change Photo
                       <input
                         type="file"
                         className="d-none"
@@ -263,8 +259,8 @@ const Profile = () => {
                           onClick={handleAvatarUpload}
                           disabled={!!uploadError}
                         >
-                        <FaUpload/> Upload
-                          
+                          <FaUpload /> Upload
+
                         </Button>
                         <Button
                           variant="outline-secondary"
@@ -309,12 +305,12 @@ const Profile = () => {
                     submitButtonText="Update Profile"
                   />
                   <div className="mt-3">
-                    { isAdmin && <Button
+                    {isAdmin && <Button
                       variant="outline-primary"
                       className="mb-3"
                       onClick={() => setShowPasswordChange(!showPasswordChange)}
                     >
-                      <FaKey/>
+                      <FaKey />
                       {showPasswordChange ? ' Hide Password Change' : ' Change Password'}
                     </Button>}
                   </div>

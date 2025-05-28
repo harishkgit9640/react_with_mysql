@@ -2,6 +2,7 @@ import React from "react";
 import { FaEnvelope, FaPhone } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import LOGO_URL from '../assets/footer-logo.png';
 
 const Footer = () => {
   return (
@@ -10,9 +11,9 @@ const Footer = () => {
         <div className="row">
           {/* Company Info */}
           <div className="col-md-4 mb-3">
-            <h5 className="mb-3">NIC GPM</h5>
-            <p className="text-light">
-              Providing quality services and solutions for our employee.
+            <img src={LOGO_URL} alt="Logo" height={100} />
+            <p className="text-light mt-3">
+              Providing quality services and solutions <br /> for our employee.
             </p>
           </div>
 
@@ -57,7 +58,7 @@ const Footer = () => {
             <h5 className="mb-3">Contact Us</h5>
             <ul className="list-unstyled text-light">
               <li className="mb-2">
-                <FaLocationDot size={20}/> National-Informatics-Centre,Gaurela-Pendra-Marwahi <br />
+                <FaLocationDot size={20} /> National-Informatics-Centre,Gaurela-Pendra-Marwahi <br />
                 Chhattisgarh
               </li>
               <li className="mb-2">
