@@ -26,10 +26,12 @@ const App = () => {
         <main className="flex-grow-1 container mx-auto px-4 py-8">
           <Routes>
             {/* Public Routes */}
+            <Route path="/" element={<DashboardOverview />} />
+            <Route path="/home" element={<DashboardOverview />} />
             <Route path="/about" element={<AboutUs />} />
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/dashboard-overview" element={<DashboardOverview />} />
-            
+
             <Route
               path="/login"
               element={

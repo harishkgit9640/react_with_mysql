@@ -33,17 +33,18 @@ function NavbarComponent() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Link to="/dashboard" className="nav-link">Projects</Link>
+            {!isAuthenticated && <Link to="/home" className="nav-link fw-bold">Home</Link>}
+            <Link to="/dashboard" className="nav-link fw-bold">Projects</Link>
             {isAdmin && isAuthenticated ? (
               <>
-                <Link to="/user-dashboard" className="nav-link">User Details</Link>
-                <Link to="/contact-management" className="nav-link">Contact Details</Link>
+                <Link to="/user-dashboard" className="nav-link fw-bold">User Details</Link>
+                <Link to="/contact-management" className="nav-link fw-bold">Contact Details</Link>
               </>
 
             ) : (
               <>
-                <Link to="/about" className="nav-link">About</Link>
-                <Link to="/contacts" className="nav-link">Contacts</Link>
+                <Link to="/about" className="nav-link fw-bold">About</Link>
+                <Link to="/contacts" className="nav-link fw-bold">Contacts</Link>
               </>
             )}
           </Nav>
@@ -78,7 +79,7 @@ function NavbarComponent() {
                 </NavDropdown.Item>
               </NavDropdown>
             ) : (
-              <Link to="/login" className="nav-link">
+              <Link to="/login" className="nav-link fw-bold">
                 <FaSignInAlt className="me-2" /> Login
               </Link>
             )}
