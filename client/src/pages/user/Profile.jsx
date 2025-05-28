@@ -228,7 +228,6 @@ const Profile = () => {
             {/* Left Column - Profile Picture */}
             <Col md={4} className="text-center mb-4 mb-md-0">
               <div className="position-relative d-inline-block">
-                {user.profile_picture}
                 <Image
                   src={user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : ADD_PHOTO}
                   alt="Profile"
