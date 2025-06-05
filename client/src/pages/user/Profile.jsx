@@ -211,7 +211,7 @@ const Profile = () => {
       <Card className="shadow">
         <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center">
           <h3 className="mb-0">My Profile</h3>
-          <Button
+          {isAdmin && <Button
             variant="light"
             onClick={() => {
               setIsEditing(!isEditing);
@@ -221,7 +221,7 @@ const Profile = () => {
             }}
           >
             {isEditing ? 'Cancel' : 'Edit Profile'}
-          </Button>
+          </Button>}
         </Card.Header>
         <Card.Body>
           <Row>
@@ -236,50 +236,50 @@ const Profile = () => {
                   style={{ width: '200px', height: '200px', objectFit: 'cover' }}
                 />
 
-                {isEditing && (
-                  <div className="mt-3">
-                    <label
-                      className="btn btn-outline-primary btn-sm"
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <FaCamera size={18} />  Change Photo
-                      <input
-                        type="file"
-                        className="d-none"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                      />
-                    </label>
-                    {selectedFile && (
-                      <div className="mt-2">
-                        <Button
-                          variant="success"
-                          size="sm"
-                          onClick={handleAvatarUpload}
-                          disabled={!!uploadError}
-                        >
-                          <FaUpload /> Upload
 
-                        </Button>
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          className="ms-2"
-                          onClick={() => {
-                            setSelectedFile(null);
-                            setPreviewImage(user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : null);
-                            setUploadError(null);
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    )}
-                    {uploadError && (
-                      <div className="text-danger mt-2 small">{uploadError}</div>
-                    )}
-                  </div>
-                )}
+                <div className="mt-3">
+                  <label
+                    className="btn btn-outline-primary btn-sm"
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <FaCamera size={18} />  Change Photo
+                    <input
+                      type="file"
+                      className="d-none"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                  {selectedFile && (
+                    <div className="mt-2">
+                      <Button
+                        variant="success"
+                        size="sm"
+                        onClick={handleAvatarUpload}
+                        disabled={!!uploadError}
+                      >
+                        <FaUpload /> Upload
+
+                      </Button>
+                      <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        className="ms-2"
+                        onClick={() => {
+                          setSelectedFile(null);
+                          setPreviewImage(user.profile_picture ? `http://localhost:5000/${user.profile_picture}` : null);
+                          setUploadError(null);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  )}
+                  {uploadError && (
+                    <div className="text-danger mt-2 small">{uploadError}</div>
+                  )}
+                </div>
+
               </div>
               {!isEditing && (
                 <div className="mt-3">
