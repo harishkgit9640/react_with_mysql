@@ -56,6 +56,15 @@ const AddProjectModal = ({ show, onHide, onSuccess }) => {
         if (!formData.status?.trim()) {
             newErrors.status = 'Status is required';
         }
+        // check mobile number should be 10 digits and only accept number
+        // const phoneFields = ['nodal_contact_no', 'mp_contact_no', 'contact_no'];
+        // phoneFields.forEach(field => {
+        //     if (formData[field] && (!/^\d{10}$/.test(formData[field]))) {
+        //         newErrors[field] = `${field.replace('_', ' ')} should be 10 digits and numeric`;
+        //     }
+        // });
+
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -282,7 +291,7 @@ const AddProjectModal = ({ show, onHide, onSuccess }) => {
                                     <Form.Group>
                                         <Form.Label>Nodal Contact No</Form.Label>
                                         <Form.Control
-                                            type="text"
+                                            type="number"
                                             name="nodal_contact_no"
                                             value={formData.nodal_contact_no}
                                             onChange={handleChange}
@@ -362,7 +371,7 @@ const AddProjectModal = ({ show, onHide, onSuccess }) => {
                                     <Form.Group>
                                         <Form.Label>Manpower Contact No</Form.Label>
                                         <Form.Control
-                                            type="text"
+                                            type="number"
                                             name="mp_contact_no"
                                             value={formData.mp_contact_no}
                                             onChange={handleChange}
@@ -400,7 +409,7 @@ const AddProjectModal = ({ show, onHide, onSuccess }) => {
                             <Form.Group>
                                 <Form.Label>Contact No</Form.Label>
                                 <Form.Control
-                                    type="text"
+                                    type="number"
                                     name="contact_no"
                                     value={formData.contact_no}
                                     onChange={handleChange}

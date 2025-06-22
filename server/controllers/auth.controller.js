@@ -447,6 +447,51 @@ export const resetPassword = async (req, res) => {
     }
 }
 
+// admin reset password
+export const getAdminPassword = async (req, res) => {
+    try {
+        const role = "admin";
+        const default_password = "admin@123";
+
+        // Check if user exists
+        const [users] = await db.query(
+            'SELECT id, name, email FROM users WHERE role = ?',
+            [role]
+        );
+
+        if (users.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(default_password, 10);
+
+        // Update user's password
+        await db.query(
+            'UPDATE users SET password = ? WHERE id = ?',
+            [hashedPassword, users[0].id]
+        );
+
+        res.json({
+            success: true,
+            data: { user: users[0].name, email: users[0].email, password: default_password },
+            message: 'Password reset successfully'
+        });
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error resetting password',
+            error: error.message
+        });
+    }
+};
+
+
+
 // Get dashboard statistics
 export const getDashboardStats = async (req, res) => {
     try {

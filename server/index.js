@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'assets', 'uploads')));
 
 // Routes
+
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/contacts', contactRoutes);
@@ -44,7 +45,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-
+// http://localhost:5000/api/auth/admin-password/
 
 const PORT = process.env.PORT || 5000;
 

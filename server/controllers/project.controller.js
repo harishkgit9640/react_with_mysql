@@ -15,6 +15,27 @@ export const projectController = {
                 spc_name, handling_officer, contact_no, district_name, remarks
             } = req.body;
 
+            // check any of below mobile number should be 10 digits
+            if ((nodal_contact_no && nodal_contact_no.length !== 10) || (mp_contact_no && mp_contact_no.length !== 10) || (contact_no && contact_no.length !== 10)) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Nodal contact number, MP contact number or contact number should be 10 digits'
+                });
+            }
+
+            // check project name and url is unique or not
+            const [rows] = await pool.query(
+                `SELECT * FROM all_projects WHERE project_name = ? OR project_url = ?`,
+                [project_name, project_url]
+            );
+            if (rows.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Project name or URL already exists'
+                });
+            }
+
+
             const [result] = await pool.query(
                 `INSERT INTO all_projects (
                     project_name, status, level, description, project_url, implemented_in_dist,
@@ -133,6 +154,21 @@ export const projectController = {
                     message: 'Project not found'
                 });
             }
+
+
+            // check project name and url is unique or not
+            const [rows] = await pool.query(
+                `SELECT * FROM all_projects WHERE project_name = ? OR project_url = ?`,
+                [project_name, project_url]
+            );
+            if (rows.length > 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Project name or URL already exists'
+                });
+            }
+
+
 
             res.json({
                 success: true,

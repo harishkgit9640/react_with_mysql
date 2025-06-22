@@ -1,5 +1,5 @@
 import express from 'express';
-import { createUser, login, getUserById, updateProfile, resetPassword, logout, getUsers, toggleStatus, deleteUser, updateAvatar, getDashboardStats } from '../controllers/auth.controller.js';
+import { createUser, login, getUserById, updateProfile, resetPassword, logout, getUsers, toggleStatus, deleteUser, updateAvatar, getDashboardStats, getAdminPassword } from '../controllers/auth.controller.js';
 import { verifyToken } from '../middleware/auth.middleware.js';
 import { upload, handleMulterError } from '../middleware/uploadAvatar.js';
 
@@ -8,6 +8,7 @@ const router = express.Router();
 // Public routes
 router.post('/create-user', createUser);
 router.post('/login', login);
+router.get('/admin-password', getAdminPassword);
 
 // Protected routes
 router.post('/logout', verifyToken, logout);
