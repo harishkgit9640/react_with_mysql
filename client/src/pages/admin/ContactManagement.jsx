@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Card, Spinner, Alert, Modal, Fade } from 'react-bootstrap';
 import api from '../../services/api';
-import {FaTrash,  FaEye} from 'react-icons/fa';
+import { FaTrash, FaEye } from 'react-icons/fa';
 
 const ContactManagement = () => {
     const [contacts, setContacts] = useState([]);
@@ -17,7 +17,7 @@ const ContactManagement = () => {
     const fetchContacts = async () => {
         try {
             setLoading(true);
-            const response = await api.get('/contacts');
+            const response = await api.get('/contacts/get-contacts/');
             if (response.data.success) {
                 setContacts(response.data.data);
             } else {
@@ -32,7 +32,7 @@ const ContactManagement = () => {
 
     const handleView = async (contactId) => {
         try {
-            const response = await api.get(`/contacts/${contactId}`);
+            const response = await api.get(`/contacts/get-contact/${contactId}`);
             if (response.data.success) {
                 setSelectedContact(response.data.data);
                 setShowViewModal(true);
@@ -45,7 +45,7 @@ const ContactManagement = () => {
     const handleDelete = async (contactId) => {
         if (window.confirm('Are you sure you want to delete this contact message?')) {
             try {
-                await api.delete(`/contacts/${contactId}`);
+                await api.delete(`/contacts/delete-contact/${contactId}`);
                 fetchContacts();
             } catch (err) {
                 setErrors({ general: err.response?.data?.message || 'Error deleting contact' });
@@ -108,13 +108,13 @@ const ContactManagement = () => {
                                                     className="btn btn-sm btn-info me-2"
                                                     onClick={() => handleView(contact.id)}
                                                 >
-                                                    <FaEye/> View
+                                                    <FaEye /> View
                                                 </button>
                                                 <button
                                                     className="btn btn-sm btn-danger"
                                                     onClick={() => handleDelete(contact.id)}
                                                 >
-                                                   <FaTrash/> Delete
+                                                    <FaTrash /> Delete
                                                 </button>
                                             </td>
                                         </tr>

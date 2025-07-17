@@ -47,7 +47,7 @@ CREATE TABLE `all_projects` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -55,7 +55,7 @@ CREATE TABLE `all_projects` (
 --
 
 /*!40000 ALTER TABLE `all_projects` DISABLE KEYS */;
-INSERT INTO `all_projects` VALUES (6,'Digital Learning Portal','Active','District','Running smoothly in 30 districts','localhost://school.com','Yes','Yes','District IT Cell','9876543210','Yes','DIO123','Yes','Rajeev Mehta','IT Assistant','9988776655','Sunita Sharma','Amit Verma','9123456789','hyderabad','Running smoothly in 30 districts','2025-05-25 03:28:51','2025-05-28 06:43:01'),(7,'eHealth Card System','Inactive','State','Health card issuance system for tracking medical records.','','Yes','No','Health Dept HQ','9876501234','No','','No','','','','Dr. Pooja Nair','Karan Malhotra','9876543210','Raipur','On hold due to technical updates','2025-05-25 03:28:51','2025-05-28 06:55:11'),(8,'school project','Inactive','Central','this is school management system','localhost://school.com','Yes','Yes','Thakur','961234568','No','','No','','','','NA','NA','961234568','channai','testing','2025-05-25 03:31:56','2025-05-26 04:23:00');
+INSERT INTO `all_projects` VALUES (6,'Digital Learning Portal','Active','District','Running smoothly in 30 districts','localhost://school.com','Yes','Yes','District IT Cell','9876543210','Yes','DIO123','Yes','Rajeev Mehta','IT Assistant','9988776655','Sunita Sharma','Amit Verma','9123456789','hyderabad','Running smoothly in 30 districts','2025-05-25 03:28:51','2025-05-25 04:41:58'),(7,'eHealth Card System','Inactive','State','Health card issuance system for tracking medical records.','','Yes','No','Health Dept HQ','9876501234','No','','No','','','','Dr. Pooja Nair','Karan Malhotra','9876543210','Raipur','On hold due to technical updates','2025-05-25 03:28:51','2025-06-15 05:54:32'),(8,'school project','Inactive','Central','this is school management system','localhost://school.com','Yes','Yes','Thakur','961234568','No','','No','','','','NA','NA','961234568','Mungeli','testing','2025-05-25 03:31:56','2025-06-15 05:54:43'),(9,'Digital Learning Portal','Active','Central','this is running project','localhost://school.com','Yes','No','','','Yes','DIO123','No','','','','Dr. Pooja Nair','Karan Malhotra','9876543210','hyderabad','sdgfghfg','2025-05-25 06:39:56','2025-05-25 06:39:56');
 /*!40000 ALTER TABLE `all_projects` ENABLE KEYS */;
 
 --
@@ -73,9 +73,8 @@ CREATE TABLE `contact_details` (
   `message` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -83,7 +82,7 @@ CREATE TABLE `contact_details` (
 --
 
 /*!40000 ALTER TABLE `contact_details` DISABLE KEYS */;
-INSERT INTO `contact_details` VALUES (1,'Harish','hk@gmail.com','testing','I am harish. testing....','2025-05-27 04:15:48','2025-05-27 04:15:48');
+INSERT INTO `contact_details` VALUES (8,'HARISH KUMAR','hk@gmail.com','password','share the new password with me','2025-06-12 04:23:27','2025-06-12 04:23:27'),(10,'Erick_Dare93','Susana93@hotmail.com','testing by sagar','testing 12343','2025-06-15 06:43:52','2025-06-15 06:43:52');
 /*!40000 ALTER TABLE `contact_details` ENABLE KEYS */;
 
 --
@@ -106,7 +105,7 @@ CREATE TABLE `users` (
   `status` enum('active','inactive') DEFAULT 'active',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +113,7 @@ CREATE TABLE `users` (
 --
 
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (2,'Test User','test@gmail.com','Raipur','assets\\uploads\\1748007124198-image-1.jpg','$2a$10$99OzAH7sLL5vfAVleBs4peCe/yxfApUFrV9z5bJDWD8OkluP65F9W','user','2025-05-23 11:28:35','2025-05-28 06:41:04','active'),(3,'Admin','admin@gmail.com','Raipur123','uploads\\avatars\\avatar-1748319469624-982782821.jpg','$2a$10$f9vytIXwZjAhiLO49BtKL.SF7HsqrpSNL1TxLR7cmchrNf.WqcQoa','admin','2025-05-23 11:30:21','2025-05-27 04:17:49','active'),(5,'ram ram','Alexandre_Huels@yahoo.com','Clemmieton',NULL,'$2a$10$H2.OfWBBVBSSubMGSHeye.EHxw0Vzm6MnsCpYcvDLhVsjIpNGqdK.','user','2025-05-23 12:04:33','2025-05-26 04:22:38','inactive'),(6,'Linnea78','Fae.Metz@yahoo.com','East Alexysbury',NULL,'$2a$10$OJnh0yOwgJXaAUTzJMBnz.lYDIPndNhYm2cjuarsMTXpk2TqZOpMu','user','2025-05-23 12:07:09','2025-05-26 04:22:39','inactive'),(7,'Mae65','Will30@yahoo.com','Antelope',NULL,'$2a$10$Q6qTdMlAIBgW.bpW77z4h.aQQYRgjXlp2Y0e9fqGInHXmRDVGzNfW','user','2025-05-23 12:07:51','2025-05-23 12:07:51','active'),(8,'Louvenia64','Fletcher88@hotmail.com','Blue Springs',NULL,'$2a$10$oMVf8O3YWQw3wRAio6xua.720XaqV6Rf69ozb/MZZi8PO1HEg.rYi','user','2025-05-23 12:08:50','2025-05-26 04:22:36','inactive'),(9,'Donnie','Glenda_Johns@gmail.com','Bhilai',NULL,'$2a$10$AzuYzIPGA1jH.hXR7D7KHetAW6rgBXRtVIsjCJ/p0ICbySJ6Y4AlG','user','2025-05-23 12:08:52','2025-05-26 04:22:35','inactive'),(11,'Triston_Wiza','Lamont_Rutherford@hotmail.com','East Brielle',NULL,'$2a$10$s/XLnjXC8D8xKd8oEh.pRuNuTzwn7psLO50vdMWwLuAoXEUVBPfm6','user','2025-05-23 12:32:56','2025-05-23 12:32:56','active'),(12,'Naomi7','Sophie.Hauck@gmail.com','Berkeley',NULL,'$2a$10$/IIWsF9CWYEO76f735bWeufgBN3EhGHtZC5a4HGOWGVEnTqvxkSzC','user','2025-05-23 12:34:02','2025-05-23 12:35:33','inactive'),(14,'Joanne','Mckayla32@gmail.com','Delhi',NULL,'$2a$10$B3s4SU2dA/Ggbfnsuu01Pea.Q0Xw5vYcfHoOQ8XalJ1.rOY6tIkoC','user','2025-05-23 12:53:43','2025-05-25 00:46:50','active'),(17,'Anya.Johnston83','Dustin.Abernathy74@hotmail.com','Matildaside',NULL,'$2a$10$nb302z8g.ka9uoYCGUtaOOAXiTR/eyazdQgE/zhGDlfw3cjufWAXu','user','2025-05-25 02:02:54','2025-05-25 02:02:54','active'),(18,'Harish Kumar','h.sahu@ledflexgroup.com','Hyderabad','uploads\\avatars\\avatar-1748319948223-933428516.jpg','$2a$10$0kOZewoKSoB5/o6NpTM2TuEZd6Vf1ogm0GrQPRXMufQ6EyFnV9T1m','user','2025-05-26 04:23:53','2025-05-27 04:46:40','active');
+INSERT INTO `users` VALUES (2,'Test User','test@gmail.com','hyderabad','uploads\\avatars\\avatar-1749966805657-475929732.png','$2a$10$iVPp9FHBxLpng9VEErEEgOf/Lfnhm2.eSY69KzLbYJza.nahKSdDq','user','2025-05-23 11:28:35','2025-07-17 04:15:07','active'),(3,'Admin','admin@gmail.com','Raipur123','uploads\\avatars\\avatar-1748446615954-235424578.jpg','$2a$10$rOWfsNADvdAjR2E4tNxGB.PkJHfKKO255Ujp1upZ0L6a4sMcZpwPy','admin','2025-05-23 11:30:21','2025-06-22 15:25:24','active'),(22,'Bahadur','bahadur@gmail.com','Mungeli',NULL,'$2a$10$f7fh3Zy5djVxZbmFeO9XHOzYBbcvaeZDuyBaVtmbQUTXkuUjLG6gO','user','2025-05-25 09:09:23','2025-05-25 09:09:57','active');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 
 --
@@ -130,4 +129,4 @@ INSERT INTO `users` VALUES (2,'Test User','test@gmail.com','Raipur','assets\\upl
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-28 13:10:08
+-- Dump completed on 2025-07-17  9:49:56

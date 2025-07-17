@@ -10,7 +10,7 @@ router.post('/add-contact', contactController.createContact);
 
 // Protected routes
 router.get('/get-contacts', verifyToken, contactController.getAllContacts);
-router.put('/update-contact/:id', verifyToken, contactController.getContactById);
+router.get('/get-contact/:id', verifyToken, contactController.getContactById);
 router.delete('/delete-contact/:id', verifyToken, contactController.deleteContact);
 
 export default router; 
