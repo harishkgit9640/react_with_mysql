@@ -18,12 +18,35 @@ const __dirname = path.dirname(__filename);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middleware
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://harishsahu.com",
+    "https://www.harishsahu.com",
+    "http://harishsahu.com.s3-website.ap-south-1.amazonaws.com"
+];
+
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: function (origin, callback) {
+        // allow REST tools like Postman (no origin)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        } else {
+            return callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// IMPORTANT: preflight
+app.options("*", cors());
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Add this line after your other middleware
@@ -45,10 +68,8 @@ app.use((err, req, res, next) => {
     });
 });
 
-// http://localhost:5000/api/auth/admin-password/
 
 const PORT = process.env.PORT || 5000;
-
 // Start server only if database connection is successful
 const startServer = async () => {
     try {
