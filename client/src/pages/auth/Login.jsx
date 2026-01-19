@@ -50,22 +50,6 @@ const Login = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch('https://api.harishsahu.com/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-        credentials: 'include',
-        //  mode: 'cors'
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-
       // Call login with the credentials
       await login(formData);
 

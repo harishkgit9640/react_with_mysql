@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// const API_URL = 'http://localhost:5000/api';
 const API_URL = 'https://api.harishsahu.com/api';
 const api = axios.create({
     baseURL: API_URL,
@@ -9,11 +10,6 @@ const api = axios.create({
     withCredentials: true
 });
 
-// VITE_API_URL=https://api.harishsahu.com/api
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_API_URL,
-//   withCredentials: true
-// });
 
 // Add token to requests if it exists
 api.interceptors.request.use((config) => {
